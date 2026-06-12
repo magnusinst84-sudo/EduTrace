@@ -1,0 +1,3 @@
+# Ignore all scraped roadmap JSONs except the index
+*.json
+!index.json
