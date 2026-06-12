@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from utils.firebase_init import init_firebase
 
 load_dotenv()
+init_firebase()
 
 app = FastAPI()
 
