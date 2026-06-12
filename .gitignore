@@ -1,0 +1,13 @@
+.env 
+.env.local 
+*.env 
+serviceAccount.json 
+firebase-adminsdk*.json 
+*service_account*.json 
+node_modules/ 
+__pycache__/ 
+*.pyc 
+venv/ 
+.venv/ 
+dist/ 
+build/ 
