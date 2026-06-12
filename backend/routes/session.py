@@ -95,3 +95,47 @@ async def chat_route(
         return res
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/session/{session_id}")
+@limiter.limit("30/minute")
+async def get_session(
+    request: Request,
+    session_id: str,
+    _=Depends(verify_firebase_token)
+):
+    from db.sessions import load_session
+    loaded = load_session(session_id)
+    if loaded is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if loaded.get("uid") != request.state.uid:
+        raise HTTPException(status_code=403, detail="Access denied")
+    return loaded
+
+
+@router.get("/sessions")
+@limiter.limit("30/minute")
+async def get_sessions(
+    request: Request,
+    _=Depends(verify_firebase_token)
+):
+    from db.sessions import get_user_sessions
+    result = get_user_sessions(request.state.uid)
+    return {"sessions": result}
+
+
+@router.delete("/session/{session_id}")
+@limiter.limit("10/minute")
+async def delete_session_route(
+    request: Request,
+    session_id: str,
+    _=Depends(verify_firebase_token)
+):
+    from db.sessions import load_session, delete_session
+    loaded = load_session(session_id)
+    if loaded is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if loaded.get("uid") != request.state.uid:
+        raise HTTPException(status_code=403, detail="Access denied")
+    delete_session(session_id)
+    return {"status": "deleted", "session_id": session_id}
