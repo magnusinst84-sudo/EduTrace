@@ -3,11 +3,7 @@ import asyncio
 import google.generativeai as genai
 from google.generativeai.types import GenerationConfig
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-
 MAX_TOKENS = 1500
-
-ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 
 MODEL_CHAINS = {
     "development": ["gemini-3.1-flash-lite", "gemma-4-31b-it"],
@@ -15,6 +11,8 @@ MODEL_CHAINS = {
 }
 
 async def gemini_call(prompt: str, json_mode: bool = False, attempt: int = 0) -> str:
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
     models = MODEL_CHAINS[ENVIRONMENT]
     if attempt >= len(models):
         raise RuntimeError("All Gemini models exhausted")

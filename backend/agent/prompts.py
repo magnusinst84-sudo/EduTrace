@@ -7,18 +7,31 @@ import json
 
 
 def build_diagnostic_prompt(state: dict, turn: int) -> str:
-    """Build a single diagnostic question for the given turn number."""
-    topic = state.get("topic", "this topic")
-    header = f"You are EduTrace, an adaptive learning agent for {topic}."
+    topic = state["topic"]
+    answers = state.get("diagnostic_answers", [])
 
-    questions = {
-        0: f"Tell me what you already know about {topic} — anything from complete beginner to experienced practitioner.",
-        1: "What's driving you to learn this right now — is it for a project, a job interview, an exam, or just curiosity?",
-        2: "Roughly how many hours per week can you set aside for studying this?",
-    }
+    base = f"You are EduTrace. Onboarding a learner for: {topic}.\n"
+    if answers:
+        base += "Their answers so far:\n"
+        for i, a in enumerate(answers):
+            base += f"  Turn {i+1}: {a}\n"
 
-    question = questions.get(turn, questions[0])
-    return f"{header}\n\n{question}"
+    if turn == 0:
+        base += f"\nAsk what they already know about {topic}."
+    elif turn == 1:
+        base += "\nAsk what their learning goal is (job, project, exam, or curiosity)."
+    else:
+        base += "\nAsk how many hours per week they can dedicate."
+
+    base += "\n\nRules — strictly follow these:"
+    base += "\n- Output ONLY the question. Nothing else."
+    base += "\n- One sentence. Conversational. No formal language."
+    base += "\n- No greeting, no intro, no 'I am EduTrace', no sign-off."
+    base += "\n- No bullet points, no numbered lists, no markdown."
+    base += "\nBAD: 'Hello! I am EduTrace, your adaptive learning partner...'"
+    base += "\nGOOD: 'What do you already know about React?'"
+
+    return base
 
 
 def build_level_inference_prompt(state: dict) -> str:
@@ -118,4 +131,12 @@ def build_adaptive_prompt(state: dict, user_message: str) -> str:
     parts.append(f"\nUser: {user_message}")
     parts.append("\nRespond in plain conversational text. Do not return JSON.")
 
-    return "\n".join(parts)
+    prompt = "\n".join(parts)
+
+    prompt += "\n\nResponse rules:"
+    prompt += "\n- Short paragraphs, max 3."
+    prompt += "\n- Under 80 words unless user asks for detail."
+    prompt += "\n- No bullet points unless listing actual steps."
+    prompt += "\n- Conversational tone, not a textbook."
+
+    return prompt
