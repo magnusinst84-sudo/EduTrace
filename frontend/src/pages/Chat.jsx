@@ -47,33 +47,42 @@ function normalizeRoadmap(rawRoadmap, currentWeek = 1) {
 
 function RoadmapPanel({ roadmap, currentWeek, onClose, topic, level }) {
   return (
-    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
-        <h2 className="text-sm font-semibold text-gray-800">Your Roadmap</h2>
+    <div className="flex flex-col h-full overflow-hidden" style={{ backgroundColor: "#0d0d1f", borderLeft: "1.5px solid rgba(0,255,247,0.15)" }}>
+      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0" style={{ borderBottom: "1.5px solid rgba(0,255,247,0.1)" }}>
+        <h2 style={{ fontSize: 11, fontWeight: 500, color: "#00fff7", letterSpacing: "0.16em", textTransform: "uppercase", margin: 0 }}>Your Roadmap</h2>
         <div className="flex items-center gap-2">
           {roadmap && roadmap.length > 0 && (
             <button 
               onClick={() => exportRoadmapPDF(roadmap, topic, level)}
-              className="flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors"
+              style={{ backgroundColor: "transparent", border: "1px solid rgba(0,255,247,0.2)", borderRadius: 0, color: "#4a7a7a", fontSize: 10, letterSpacing: "0.08em", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, transition: "all 0.1s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#00fff7"; e.currentTarget.style.color = "#00fff7"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.2)"; e.currentTarget.style.color = "#4a7a7a"; }}
               title="Export Roadmap as PDF"
             >
               <Download size={14} /> Export PDF
             </button>
           )}
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-            <X size={16} />
+          <button 
+            onClick={onClose} 
+            style={{ backgroundColor: "transparent", border: "1px solid rgba(0,255,247,0.15)", borderRadius: 0, color: "#4a7a7a", padding: "4px 8px", cursor: "pointer", display: "flex", alignItems: "center", transition: "all 0.1s" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#ff2d6b"; e.currentTarget.style.color = "#ff2d6b"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.15)"; e.currentTarget.style.color = "#4a7a7a"; }}
+          >
+            <X size={14} />
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        {roadmap.map((week, index) => (
-          <div key={week.week || index} className="transition-all duration-300 ease-out" style={{ opacity: 1, transform: 'translateY(0)', animation: `fadeSlideIn 300ms ease-out ${index * 150}ms both` }}>
-            <RoadmapWeekCard
-              {...week}
-              status={week.week === currentWeek ? 'current' : week.week < currentWeek ? 'completed' : 'upcoming'}
-            />
-          </div>
-        ))}
+      <div className="flex-1 overflow-y-auto" style={{ padding: 12 }}>
+        <div className="space-y-2">
+          {roadmap.map((week, index) => (
+            <div key={week.week || index} className="transition-all duration-300 ease-out" style={{ opacity: 1, transform: 'translateY(0)', animation: `fadeSlideIn 300ms ease-out ${index * 150}ms both` }}>
+              <RoadmapWeekCard
+                {...week}
+                status={week.week === currentWeek ? 'current' : week.week < currentWeek ? 'completed' : 'upcoming'}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -91,11 +100,11 @@ function BottomSheet({ isOpen, onClose, children }) {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 z-45" onClick={onClose} />
+      <div className="fixed inset-0 z-45" style={{ backgroundColor: "rgba(0,0,0,0.75)" }} onClick={onClose} />
       <div ref={sheetRef} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl overflow-hidden shadow-2xl" style={{ height: '85vh' }}>
+        className="fixed bottom-0 left-0 right-0 z-50 overflow-hidden shadow-2xl" style={{ height: '85vh', backgroundColor: "#0d0d1f", borderTop: "1.5px solid rgba(0,255,247,0.2)", borderRadius: 0 }}>
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 bg-gray-300 rounded-full" />
+          <div style={{ backgroundColor: "#00fff7", width: 32, height: 2, borderRadius: 0 }} />
         </div>
         <div className="h-full overflow-y-auto pb-8">{children}</div>
       </div>
@@ -245,68 +254,85 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden" style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className="flex h-screen overflow-hidden" style={{ fontFamily: "'JetBrains Mono', monospace", backgroundColor: "#05050f" }}>
 
       <div className="flex flex-col min-w-0 transition-all duration-400 ease-out relative" style={{ flex: panelOpen && !isMobile ? '0 0 60%' : '1 1 100%' }}>
 
         {/* Top nav */}
-        <header style={{ height: 52, backgroundColor: "#fff", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", flexShrink: 0 }}>
+        <header style={{ height: 52, backgroundColor: "#0d0d1f", backdropFilter: "none", borderBottom: "1.5px solid rgba(0,255,247,0.15)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <BookOpen size={15} color="#fff" />
+            <div style={{ width: 26, height: 26, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <BookOpen size={13} color="#00fff7" />
             </div>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#1E1B4B", letterSpacing: "-0.02em" }}>EduTrace</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#00fff7", letterSpacing: "0.18em" }}>EDUTRACE</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 13, color: "#6B7280" }}>Learning: <b style={{ color: "#1E1B4B" }}>{topic}</b></span>
-
-            {/* Teaching mode */}
-            {worldState && (
-              <select
-                value={worldState?.teaching_mode || 'analogy'}
-                onChange={(e) => {
-                  const mode = e.target.value
-                  setWorldState(prev => prev ? { ...prev, teaching_mode: mode } : null)
-                  const msg = mode === 'code_example' ? 'switch to code mode' : `switch to ${mode} mode`
-                  handleSend(msg)
-                }}
-                className="px-2 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-xs font-semibold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
-              >
-                <option value="analogy">Analogy</option>
-                <option value="socratic">Socratic</option>
-                <option value="code_example">Code Example</option>
-              </select>
-            )}
-
-            {/* Pace selector */}
-            {worldState && sessionState === 'adaptive' && (
-              <select
-                value={pace}
-                onChange={(e) => setPace(e.target.value)}
-                className="px-2 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-xs font-semibold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
-                title="Learning pace"
-              >
-                <option value="relaxed">🐢 Relaxed</option>
-                <option value="normal">⚡ Normal</option>
-                <option value="accelerated">🚀 Accelerated</option>
-              </select>
-            )}
-
-            {/* Quiz button */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {worldState && (
               <button
                 onClick={() => setShowQuiz(true)}
-                className="px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition-colors hidden sm:block"
+                className="hidden sm:flex"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "1.5px solid #00fff7",
+                  borderRadius: 0,
+                  color: "#00fff7",
+                  fontSize: 11,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  boxShadow: "2px 2px 0 #00fff7",
+                  display: "flex", alignItems: "center", gap: 6,
+                  transition: "all 0.1s"
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.08)"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translate(2px,2px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.boxShadow = "2px 2px 0 #00fff7"; e.currentTarget.style.transform = "none"; }}
               >
-                Take Week {worldState?.week || 1} Quiz
+                Week {worldState?.week || 1} Quiz
               </button>
             )}
-
-            <button onClick={() => navigate('/')} style={{ padding: "5px 12px", borderRadius: 7, border: "1.5px solid #E5E7EB", backgroundColor: "#fff", fontSize: 12, color: "#6B7280", cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
-              <RotateCcw size={12} /> <span className="hidden sm:inline">New topic</span>
+            <button
+              onClick={() => navigate('/')}
+              style={{
+                backgroundColor: "transparent",
+                border: "1.5px solid rgba(0,255,247,0.2)",
+                borderRadius: 0,
+                color: "#4a7a7a",
+                fontSize: 11,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "6px 14px",
+                cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6,
+                transition: "all 0.1s"
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.5)"; e.currentTarget.style.color = "#00fff7"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.2)"; e.currentTarget.style.color = "#4a7a7a"; }}
+            >
+              <RotateCcw size={14} />
+              <span className="hidden sm:inline">New topic</span>
             </button>
-            <button onClick={() => { logout(); navigate('/login') }} style={{ padding: "5px 12px", borderRadius: 7, border: "1.5px solid #E5E7EB", backgroundColor: "#fff", fontSize: 12, color: "#EF4444", cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
-              <LogOut size={12} /> Logout
+            <button
+              onClick={() => { logout(); navigate('/login') }}
+              style={{
+                backgroundColor: "transparent",
+                border: "1.5px solid #ff2d6b",
+                borderRadius: 0,
+                color: "#ff2d6b",
+                fontSize: 11,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "6px 14px",
+                cursor: "pointer",
+                boxShadow: "2px 2px 0 #ff2d6b",
+                display: "flex", alignItems: "center", gap: 6,
+                transition: "all 0.1s"
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,45,107,0.08)"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translate(2px,2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.boxShadow = "2px 2px 0 #ff2d6b"; e.currentTarget.style.transform = "none"; }}
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </header>
@@ -321,13 +347,15 @@ export default function Chat() {
                 <div className="flex flex-col gap-1">
                   <TypingIndicator />
                   {generatingRoadmap && (
-                    <p className="text-xs text-gray-400 px-2">Generating your personalized roadmap, this may take up to 30 seconds...</p>
+                    <p style={{ fontSize: 11, color: "#4a7a7a", letterSpacing: "0.06em", paddingLeft: 4 }}>
+                      Generating your personalized roadmap, this may take up to 30 seconds...
+                    </p>
                   )}
                 </div>
               )}
             </div>
 
-            <div style={{ padding: "12px 16px 80px 16px", borderTop: "1px solid #E5E7EB", backgroundColor: "#fff", display: "flex", gap: 10, alignItems: "flex-end" }}>
+            <div style={{ padding: "12px 16px 80px 16px", borderTop: "1.5px solid rgba(0,255,247,0.1)", backgroundColor: "#05050f", display: "flex", gap: 10, alignItems: "flex-end" }}>
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -335,23 +363,55 @@ export default function Chat() {
                 placeholder="Ask a question, say 'I'm stuck', or type 'next'..."
                 rows={1}
                 disabled={typing || generatingRoadmap}
-                style={{ flex: 1, resize: "none", border: "1.5px solid #E5E7EB", borderRadius: 10, padding: "10px 12px", fontSize: 14, color: "#111827", outline: "none", fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}
-                onFocus={(e) => e.currentTarget.style.borderColor = "#4F46E5"}
-                onBlur={(e) => e.currentTarget.style.borderColor = "#E5E7EB"}
+                style={{
+                  flex: 1, resize: "none",
+                  border: "1px solid rgba(0,255,247,0.12)",
+                  borderBottom: "1.5px solid #00fff7",
+                  backgroundColor: "#0d0d1f",
+                  borderRadius: 0,
+                  padding: "10px 12px",
+                  fontSize: 13, color: "#e0f7f7",
+                  outline: "none", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.6
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = "rgba(0,255,247,0.4)"}
+                onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.12)"; e.currentTarget.style.borderBottomColor = "#00fff7"; }}
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || typing || generatingRoadmap}
-                style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: (input.trim() && !typing && !generatingRoadmap) ? "#4F46E5" : "#E5E7EB", border: "none", cursor: (input.trim() && !typing && !generatingRoadmap) ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.15s" }}
+                style={{
+                  width: 38, height: 38, borderRadius: 0,
+                  border: "1.5px solid",
+                  borderColor: (input.trim() && !typing && !generatingRoadmap) ? "#00fff7" : "rgba(0,255,247,0.1)",
+                  backgroundColor: "transparent",
+                  boxShadow: (input.trim() && !typing && !generatingRoadmap) ? "2px 2px 0 #00fff7" : "none",
+                  cursor: (input.trim() && !typing && !generatingRoadmap) ? "pointer" : "default",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  transition: "all 0.08s ease"
+                }}
+                onMouseEnter={(e) => {
+                  if (input.trim() && !typing && !generatingRoadmap) {
+                    e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.08)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translate(2px,2px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (input.trim() && !typing && !generatingRoadmap) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.boxShadow = "2px 2px 0 #00fff7";
+                    e.currentTarget.style.transform = "none";
+                  }
+                }}
               >
-                <Send size={16} color={input.trim() ? "#fff" : "#9CA3AF"} />
+                <Send size={16} color={(input.trim() && !typing && !generatingRoadmap) ? "#00fff7" : "#4a7a7a"} />
               </button>
             </div>
           </div>
 
           {!isMobile && worldState && (
-            <div style={{ width: panelOpen ? 0 : 320, overflow: "hidden", transition: "width 0.4s ease-out", borderLeft: panelOpen ? "none" : "1px solid #E5E7EB", backgroundColor: "#F9FAFB" }}>
-              <div style={{ width: 320, padding: 16 }}>
+            <div style={{ width: panelOpen ? 0 : 320, overflow: "hidden", transition: "width 0.4s ease-out", borderLeft: panelOpen ? "none" : "1.5px solid rgba(0,255,247,0.1)", backgroundColor: "#05050f" }}>
+              <div style={{ width: 320, padding: 16, overflowY: "auto", height: "100%" }}>
                 <WorldStatePanel
                   topic={worldState.topic ?? topic}
                   level={worldState.level ?? '—'}
@@ -362,6 +422,84 @@ export default function Chat() {
                   stuckModeActive={worldState.stuck_mode_active ?? false}
                   stuckModeName={worldState.stuck_mode_name ?? 'Analogy mode'}
                 />
+
+                {/* Teaching Mode */}
+                {worldState && (
+                  <div style={{ padding: "16px 12px 0 12px", borderTop: "1.5px solid rgba(0,255,247,0.1)", marginTop: 12 }}>
+                    <p style={{ fontSize: 10, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 500, marginBottom: 8 }}>
+                      Teaching Mode
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      {[['analogy', 'Analogy'], ['socratic', 'Socratic'], ['code_example', 'Code Examples']].map(([mode, label]) => (
+                        <button
+                          key={mode}
+                          onClick={() => {
+                            setWorldState(prev => prev ? { ...prev, teaching_mode: mode } : null)
+                            const msg = mode === 'code_example' ? 'switch to code mode' : `switch to ${mode} mode`
+                            handleSend(msg)
+                          }}
+                          style={{
+                            width: "100%", padding: "8px 12px", borderRadius: 0, border: "1px solid", textAlign: "left", fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.08s",
+                            borderColor: (worldState?.teaching_mode || 'analogy') === mode ? "rgba(0,255,247,0.5)" : "rgba(0,255,247,0.08)",
+                            backgroundColor: (worldState?.teaching_mode || 'analogy') === mode ? "rgba(0,255,247,0.06)" : "transparent",
+                            color: (worldState?.teaching_mode || 'analogy') === mode ? "#00fff7" : "#4a7a7a",
+                          }}
+                          onMouseEnter={(e) => {
+                            if ((worldState?.teaching_mode || 'analogy') !== mode) {
+                              e.currentTarget.style.borderColor = "rgba(0,255,247,0.25)";
+                              e.currentTarget.style.color = "#e0f7f7";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if ((worldState?.teaching_mode || 'analogy') !== mode) {
+                              e.currentTarget.style.borderColor = "rgba(0,255,247,0.08)";
+                              e.currentTarget.style.color = "#4a7a7a";
+                            }
+                          }}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pace */}
+                {worldState && sessionState === 'adaptive' && (
+                  <div style={{ padding: "16px 12px 0 12px", marginTop: 12 }}>
+                    <p style={{ fontSize: 10, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 500, marginBottom: 8 }}>
+                      Learning Pace
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      {[['relaxed', '🐢 Relaxed'], ['normal', '⚡ Normal'], ['accelerated', '🚀 Accelerated']].map(([p, label]) => (
+                        <button
+                          key={p}
+                          onClick={() => setPace(p)}
+                          style={{
+                            width: "100%", padding: "8px 12px", borderRadius: 0, border: "1px solid", textAlign: "left", fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.08s",
+                            borderColor: pace === p ? "rgba(0,255,247,0.5)" : "rgba(0,255,247,0.08)",
+                            backgroundColor: pace === p ? "rgba(0,255,247,0.06)" : "transparent",
+                            color: pace === p ? "#00fff7" : "#4a7a7a",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (pace !== p) {
+                              e.currentTarget.style.borderColor = "rgba(0,255,247,0.25)";
+                              e.currentTarget.style.color = "#e0f7f7";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (pace !== p) {
+                              e.currentTarget.style.borderColor = "rgba(0,255,247,0.08)";
+                              e.currentTarget.style.color = "#4a7a7a";
+                            }
+                          }}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -369,7 +507,12 @@ export default function Chat() {
 
         {isMobile && roadmap?.length > 0 && (
           <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10">
-            <button onClick={() => setBottomSheetOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-full shadow-lg hover:bg-indigo-700 transition-colors">
+            <button 
+              onClick={() => setBottomSheetOpen(true)} 
+              style={{ backgroundColor: "transparent", border: "1.5px solid #00fff7", borderRadius: 0, color: "#00fff7", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", padding: "8px 16px", cursor: "pointer", boxShadow: "3px 3px 0 #00fff7", display: "flex", alignItems: "center", gap: 6, transition: "all 0.1s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.08)"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translate(3px,3px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.boxShadow = "3px 3px 0 #00fff7"; e.currentTarget.style.transform = "none"; }}
+            >
               View Roadmap ↑
             </button>
           </div>
@@ -377,8 +520,14 @@ export default function Chat() {
       </div>
 
       {!isMobile && roadmap?.length > 0 && (
-        <button onClick={() => setPanelOpen(p => !p)} className="flex-shrink-0 w-5 self-stretch flex items-center justify-center bg-gray-100 hover:bg-gray-200 border-x border-gray-200 transition-colors z-10" title={panelOpen ? 'Collapse panel' : 'Expand panel'}>
-          {panelOpen ? <ChevronRight size={14} className="text-gray-500" /> : <ChevronLeft size={14} className="text-gray-500" />}
+        <button 
+          onClick={() => setPanelOpen(p => !p)} 
+          style={{ backgroundColor: "#0d0d1f", borderLeft: "1px solid rgba(0,255,247,0.1)", borderRight: "1px solid rgba(0,255,247,0.1)", width: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, alignSelf: "stretch", transition: "background 0.1s" }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.04)"}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d0d1f"}
+          title={panelOpen ? 'Collapse panel' : 'Expand panel'}
+        >
+          {panelOpen ? <ChevronRight size={14} color="#4a7a7a" /> : <ChevronLeft size={14} color="#4a7a7a" />}
         </button>
       )}
 
@@ -388,7 +537,7 @@ export default function Chat() {
             {roadmap?.length > 0 && <RoadmapPanel roadmap={roadmap} currentWeek={worldState?.week || 1} onClose={() => setPanelOpen(false)} topic={topic} level={worldState?.level} />}
           </div>
           {worldState && (
-            <div style={{ width: 280, borderLeft: "1px solid #E5E7EB", backgroundColor: "#fff", padding: 12, overflowY: "auto" }} className="border-l border-gray-100">
+            <div style={{ width: 280, borderLeft: "1.5px solid rgba(0,255,247,0.1)", backgroundColor: "#05050f", padding: 12, overflowY: "auto" }}>
               <WorldStatePanel
                 topic={worldState.topic ?? topic}
                 level={worldState.level ?? '—'}
@@ -399,6 +548,84 @@ export default function Chat() {
                 stuckModeActive={worldState.stuck_mode_active ?? false}
                 stuckModeName={worldState.stuck_mode_name ?? 'Analogy mode'}
               />
+
+              {/* Teaching Mode */}
+              {worldState && (
+                <div style={{ padding: "16px 12px 0 12px", borderTop: "1.5px solid rgba(0,255,247,0.1)", marginTop: 12 }}>
+                  <p style={{ fontSize: 10, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 500, marginBottom: 8 }}>
+                    Teaching Mode
+                  </p>
+                  <div className="flex flex-col gap-1">
+                    {[['analogy', 'Analogy'], ['socratic', 'Socratic'], ['code_example', 'Code Examples']].map(([mode, label]) => (
+                      <button
+                        key={mode}
+                        onClick={() => {
+                          setWorldState(prev => prev ? { ...prev, teaching_mode: mode } : null)
+                          const msg = mode === 'code_example' ? 'switch to code mode' : `switch to ${mode} mode`
+                          handleSend(msg)
+                        }}
+                        style={{
+                          width: "100%", padding: "8px 12px", borderRadius: 0, border: "1px solid", textAlign: "left", fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.08s",
+                          borderColor: (worldState?.teaching_mode || 'analogy') === mode ? "rgba(0,255,247,0.5)" : "rgba(0,255,247,0.08)",
+                          backgroundColor: (worldState?.teaching_mode || 'analogy') === mode ? "rgba(0,255,247,0.06)" : "transparent",
+                          color: (worldState?.teaching_mode || 'analogy') === mode ? "#00fff7" : "#4a7a7a",
+                        }}
+                        onMouseEnter={(e) => {
+                          if ((worldState?.teaching_mode || 'analogy') !== mode) {
+                            e.currentTarget.style.borderColor = "rgba(0,255,247,0.25)";
+                            e.currentTarget.style.color = "#e0f7f7";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if ((worldState?.teaching_mode || 'analogy') !== mode) {
+                            e.currentTarget.style.borderColor = "rgba(0,255,247,0.08)";
+                            e.currentTarget.style.color = "#4a7a7a";
+                          }
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Pace */}
+              {worldState && sessionState === 'adaptive' && (
+                <div style={{ padding: "16px 12px 0 12px", marginTop: 12 }}>
+                  <p style={{ fontSize: 10, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 500, marginBottom: 8 }}>
+                    Learning Pace
+                  </p>
+                  <div className="flex flex-col gap-1">
+                    {[['relaxed', '🐢 Relaxed'], ['normal', '⚡ Normal'], ['accelerated', '🚀 Accelerated']].map(([p, label]) => (
+                      <button
+                        key={p}
+                        onClick={() => setPace(p)}
+                        style={{
+                          width: "100%", padding: "8px 12px", borderRadius: 0, border: "1px solid", textAlign: "left", fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.08s",
+                          borderColor: pace === p ? "rgba(0,255,247,0.5)" : "rgba(0,255,247,0.08)",
+                          backgroundColor: pace === p ? "rgba(0,255,247,0.06)" : "transparent",
+                          color: pace === p ? "#00fff7" : "#4a7a7a",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (pace !== p) {
+                            e.currentTarget.style.borderColor = "rgba(0,255,247,0.25)";
+                            e.currentTarget.style.color = "#e0f7f7";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (pace !== p) {
+                            e.currentTarget.style.borderColor = "rgba(0,255,247,0.08)";
+                            e.currentTarget.style.color = "#4a7a7a";
+                          }
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -427,9 +654,14 @@ export default function Chat() {
       <FloatingDock items={dockItems} />
 
       {showQuiz && (
-        <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-transparent w-full max-w-3xl relative">
-            <button onClick={() => setShowQuiz(false)} className="absolute -top-12 right-0 p-2 text-white hover:text-gray-200 transition-colors bg-black/20 rounded-full">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.85)" }}>
+          <div className="w-full max-w-3xl relative" style={{ backgroundColor: "transparent" }}>
+            <button 
+              onClick={() => setShowQuiz(false)} 
+              style={{ position: "absolute", top: -44, right: 0, backgroundColor: "#0d0d1f", border: "1.5px solid rgba(0,255,247,0.2)", borderRadius: 0, color: "#4a7a7a", padding: 6, cursor: "pointer", display: "flex", alignItems: "center", transition: "all 0.1s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#ff2d6b"; e.currentTarget.style.color = "#ff2d6b"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.2)"; e.currentTarget.style.color = "#4a7a7a"; }}
+            >
               <X size={24} />
             </button>
             <QuizPanel sessionId={sessionId} currentWeek={worldState?.week || 1} onQuizPassed={() => setShowQuiz(false)} />

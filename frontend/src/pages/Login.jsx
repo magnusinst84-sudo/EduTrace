@@ -1,4 +1,3 @@
-// TODO: wire to real data
 import React, { useState, useEffect } from "react";
 import { BookOpen, Mail, Eye, EyeOff } from "lucide-react";
 import { auth, googleProvider } from '../firebase'
@@ -44,45 +43,48 @@ export default function Login() {
 
   return (
     <div
+      className="scanlines"
       style={{
+        position: "relative",
         minHeight: "100vh",
-        backgroundColor: "#F9FAFB",
+        backgroundColor: "#05050f",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         padding: 24,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "'JetBrains Mono', monospace",
       }}
     >
       {/* Logo */}
       <div style={{ marginBottom: 32, textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <BookOpen size={20} color="#fff" />
+          <div style={{ width: 32, height: 32, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <BookOpen size={16} color="#00fff7" />
           </div>
-          <span style={{ fontSize: 22, fontWeight: 700, color: "#1E1B4B", letterSpacing: "-0.02em" }}>EduTrace</span>
+          <span style={{ fontSize: 16, fontWeight: 700, color: "#00fff7", letterSpacing: "0.24em" }}>EDUTRACE</span>
         </div>
-        <p style={{ fontSize: 14, color: "#6B7280", margin: 0 }}>AI-powered adaptive learning paths</p>
+        <p style={{ fontSize: 11, color: "#4a7a7a", margin: 0, letterSpacing: "0.1em" }}>AI-powered adaptive learning paths</p>
       </div>
 
       {/* Card */}
       <div
         style={{
-          backgroundColor: "#fff",
-          borderRadius: 16,
-          border: "1.5px solid #E5E7EB",
+          backgroundColor: "#0d0d1f",
+          borderRadius: 0,
+          border: "1.5px solid rgba(0,255,247,0.2)",
+          boxShadow: "4px 4px 0 rgba(0,255,247,0.1)",
           padding: 32,
           width: "100%",
           maxWidth: 400,
         }}
       >
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: "#1E1B4B", marginBottom: 24, marginTop: 0 }}>
+        <h2 style={{ fontSize: 13, fontWeight: 500, color: "#4a7a7a", letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 24, marginTop: 0 }}>
           {isSignUp ? "Create an account" : "Sign in to EduTrace"}
         </h2>
 
         {error && (
-          <div style={{ color: "#EF4444", fontSize: 13, marginBottom: 16, fontWeight: 500 }}>
+          <div style={{ color: "#ff2d6b", fontSize: 12, marginBottom: 16 }}>
             {error}
           </div>
         )}
@@ -92,23 +94,29 @@ export default function Login() {
           onClick={handleGoogleLogin}
           style={{
             width: "100%",
-            height: 44,
-            borderRadius: 10,
-            border: "1.5px solid #E5E7EB",
-            backgroundColor: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: 10,
-            fontSize: 14,
-            fontWeight: 500,
-            color: "#111827",
+            padding: "10px 16px",
+            backgroundColor: "transparent",
+            border: "1.5px solid rgba(0,255,247,0.2)",
+            borderRadius: 0,
+            color: "#e0f7f7",
+            fontSize: 12,
             cursor: "pointer",
             marginBottom: 20,
-            transition: "background 0.15s, border-color 0.15s",
+            fontFamily: "'JetBrains Mono', monospace",
+            transition: "all 0.1s ease"
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F9FAFB"; e.currentTarget.style.borderColor = "#9CA3AF"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#fff"; e.currentTarget.style.borderColor = "#E5E7EB"; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "#00fff7";
+            e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.04)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "rgba(0,255,247,0.2)";
+            e.currentTarget.style.backgroundColor = "transparent";
+          }}
         >
           {/* Google G icon */}
           <svg width="18" height="18" viewBox="0 0 18 18">
@@ -122,19 +130,19 @@ export default function Login() {
 
         {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <div style={{ flex: 1, height: 1, backgroundColor: "#E5E7EB" }} />
-          <span style={{ fontSize: 12, color: "#9CA3AF" }}>or</span>
-          <div style={{ flex: 1, height: 1, backgroundColor: "#E5E7EB" }} />
+          <div style={{ flex: 1, height: 1, backgroundColor: "rgba(0,255,247,0.08)" }} />
+          <span style={{ fontSize: 11, color: "#4a7a7a" }}>or</span>
+          <div style={{ flex: 1, height: 1, backgroundColor: "rgba(0,255,247,0.08)" }} />
         </div>
 
         {/* Email */}
         <form onSubmit={handleEmailLogin}>
           <div style={{ marginBottom: 14 }}>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "#374151", marginBottom: 5 }}>
+            <label style={{ display: "block", fontSize: 10, color: "#4a7a7a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 5 }}>
               Email
             </label>
             <div style={{ position: "relative" }}>
-              <Mail size={15} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} />
+              <Mail size={15} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#4a7a7a" }} />
               <input
                 type="email"
                 value={email}
@@ -142,23 +150,26 @@ export default function Login() {
                 placeholder="you@example.com"
                 style={{
                   width: "100%",
-                  height: 42,
-                  borderRadius: 8,
-                  border: "1.5px solid #E5E7EB",
+                  height: 40,
+                  borderRadius: 0,
+                  border: "1px solid rgba(0,255,247,0.2)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   padding: "0 12px 0 36px",
-                  fontSize: 14,
-                  color: "#111827",
+                  fontSize: 13,
+                  color: "#e2e8f0",
                   outline: "none",
                   boxSizing: "border-box",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "'JetBrains Mono', monospace",
                 }}
+                onFocus={(e) => e.currentTarget.style.border = "1px solid #00fff7"}
+                onBlur={(e) => e.currentTarget.style.border = "1px solid rgba(0,255,247,0.2)"}
               />
             </div>
           </div>
 
           {/* Password */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "#374151", marginBottom: 5 }}>
+            <label style={{ display: "block", fontSize: 10, color: "#4a7a7a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 5 }}>
               Password
             </label>
             <div style={{ position: "relative" }}>
@@ -169,21 +180,24 @@ export default function Login() {
                 placeholder="••••••••"
                 style={{
                   width: "100%",
-                  height: 42,
-                  borderRadius: 8,
-                  border: "1.5px solid #E5E7EB",
+                  height: 40,
+                  borderRadius: 0,
+                  border: "1px solid rgba(0,255,247,0.2)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   padding: "0 40px 0 12px",
-                  fontSize: 14,
-                  color: "#111827",
+                  fontSize: 13,
+                  color: "#e2e8f0",
                   outline: "none",
                   boxSizing: "border-box",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "'JetBrains Mono', monospace",
                 }}
+                onFocus={(e) => e.currentTarget.style.border = "1px solid #00fff7"}
+                onBlur={(e) => e.currentTarget.style.border = "1px solid rgba(0,255,247,0.2)"}
               />
               <button
                 type="button"
                 onClick={() => setShowPw((s) => !s)}
-                style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 0, color: "#9CA3AF" }}
+                style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 0, color: "#4a7a7a" }}
               >
                 {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
@@ -194,36 +208,50 @@ export default function Login() {
             type="submit"
             style={{
               width: "100%",
-              height: 44,
-              borderRadius: 10,
-              backgroundColor: "#4F46E5",
-              border: "none",
-              color: "#fff",
-              fontSize: 14,
-              fontWeight: 600,
+              display: "flex",
+              justifyContent: "center",
+              padding: "11px 16px",
+              backgroundColor: "transparent",
+              border: "1.5px solid #00fff7",
+              borderRadius: 0,
+              color: "#00fff7",
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
               cursor: "pointer",
-              transition: "background 0.15s",
+              boxShadow: "3px 3px 0 #00fff7",
+              transition: "all 0.08s ease",
+              fontFamily: "'JetBrains Mono', monospace"
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#4338CA"}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4F46E5"}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.1)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translate(3px,3px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.boxShadow = "3px 3px 0 #00fff7";
+              e.currentTarget.style.transform = "none";
+            }}
           >
             {isSignUp ? "Sign up" : "Sign in"}
           </button>
         </form>
 
-        <p style={{ fontSize: 12, color: "#6B7280", textAlign: "center", marginTop: 16, marginBottom: 0 }}>
+        <p style={{ fontSize: 12, color: "#4a7a7a", textAlign: "center", marginTop: 16, marginBottom: 0 }}>
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             type="button"
             onClick={() => setIsSignUp(!isSignUp)}
-            style={{ color: "#4F46E5", fontWeight: 500, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            style={{ color: "#00fff7", fontWeight: 500, background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'JetBrains Mono', monospace" }}
           >
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
       </div>
 
-      <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 24 }}>Powered by Gemini API</p>
+      <p style={{ fontSize: 10, color: "#4a7a7a", marginTop: 24 }}>Powered by Gemini API</p>
     </div>
   );
 }

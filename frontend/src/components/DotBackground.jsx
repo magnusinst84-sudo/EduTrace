@@ -5,17 +5,15 @@ export function DotBackground({ children, className = "" }) {
     <div
       className={`relative w-full ${className}`}
       style={{
-        backgroundColor: "#0f0f1a",
-        backgroundImage: `radial-gradient(#333 1px, transparent 1px)`,
+        backgroundColor: "#05050f",
+        backgroundImage: `radial-gradient(rgba(0,255,247,0.15) 1px, transparent 1px)`,
         backgroundSize: "24px 24px",
       }}
     >
-      {/* Radial fade overlay so dots fade toward center */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 40%, #0f0f1a 100%)",
+          background: "radial-gradient(ellipse at center, transparent 30%, #05050f 100%)",
         }}
       />
       <div className="relative z-10">{children}</div>

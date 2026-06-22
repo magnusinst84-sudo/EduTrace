@@ -62,134 +62,178 @@ export default function Landing() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#F9FAFB",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px 24px 96px 24px",
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      {/* Logout button top right */}
-      <button
-        onClick={() => { logout(); navigate('/login') }}
-        style={{
-          position: "absolute",
-          top: 24,
-          right: 24,
-          padding: "6px 14px",
-          borderRadius: 8,
-          border: "1.5px solid #E5E7EB",
-          backgroundColor: "#fff",
-          color: "#6B7280",
-          fontSize: 13,
-          fontWeight: 500,
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </button>
-
-      {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <BookOpen size={22} color="#fff" />
+    <div style={{ minHeight: "100vh", backgroundColor: "#05050f", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 96 }}>
+      
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", backgroundColor: "#0d0d1f", borderBottom: "1.5px solid rgba(0,255,247,0.15)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <BookOpen size={14} color="#00fff7" />
+          </div>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#00fff7", letterSpacing: "0.2em" }}>EDUTRACE</span>
         </div>
-        <span style={{ fontSize: 32, fontWeight: 700, color: "#1E1B4B", letterSpacing: "-0.03em" }}>EduTrace</span>
+        <button
+          onClick={() => { logout(); navigate('/login') }}
+          style={{
+            backgroundColor: "transparent",
+            border: "1.5px solid #ff2d6b",
+            borderRadius: 0,
+            color: "#ff2d6b",
+            fontSize: 11,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            padding: "6px 14px",
+            cursor: "pointer",
+            boxShadow: "2px 2px 0 #ff2d6b",
+            transition: "all 0.1s"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(255,45,107,0.1)"
+            e.currentTarget.style.boxShadow = "none"
+            e.currentTarget.style.transform = "translate(2px,2px)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent"
+            e.currentTarget.style.boxShadow = "2px 2px 0 #ff2d6b"
+            e.currentTarget.style.transform = "none"
+          }}
+        >
+          Logout
+        </button>
       </div>
 
-      <p style={{ fontSize: 16, color: "#6B7280", marginBottom: 36, marginTop: 0, textAlign: "center", maxWidth: 360 }}>
-        Enter any topic and get a personalized learning path — adapted as you go.
-      </p>
-
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+      {/* Hero Search */}
+      <div className="scanlines" style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 40px", position: "relative" }}>
+        <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, color: "#e0f7f7", letterSpacing: "0.04em", marginBottom: 8, textAlign: "center" }}>
+          What do you want to learn today?
+        </h1>
+        <p style={{ fontSize: 13, color: "#4a7a7a", marginBottom: 32, textAlign: "center", letterSpacing: "0.06em" }}>
+          Enter any topic and get a personalized week-by-week learning path.
+        </p>
         <TopicInput value={topic} onChange={setTopic} onSubmit={handleStart} autoFocus />
-
-        {loading && (
-          <div style={{ color: "#4F46E5", fontSize: 13, marginTop: 12, fontWeight: 500 }}>
-            Analyzing topic and setting up workspace...
-          </div>
-        )}
-
-        {error && (
-          <div style={{ color: "#EF4444", fontSize: 13, marginTop: 12, fontWeight: 500 }}>
-            {error}
-          </div>
-        )}
+        {loading && <p style={{ color: "#00fff7", fontSize: 12, marginTop: 12, textAlign: "center" }}>Setting up your workspace...</p>}
+        {error && <p style={{ color: "#ff2d6b", fontSize: 12, marginTop: 12, textAlign: "center" }}>{error}</p>}
+        
+        {/* Chips */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16, justifyContent: "center" }}>
+          {chips.map((c) => (
+            <ExampleChip key={c} label={c} onClick={(v) => setTopic(v)} />
+          ))}
+        </div>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16, justifyContent: "center", maxWidth: 480 }}>
-        {chips.map((c) => (
-          <ExampleChip key={c} label={c} onClick={(v) => { setTopic(v); }} />
-        ))}
-      </div>
-
-      {/* Past Sessions */}
-      {!sessionsLoading && pastSessions.length > 0 && (
-        <div style={{ width: "100%", maxWidth: 480, marginTop: 36 }}>
-          <p style={{ fontSize: 13, fontWeight: 500, color: "#6B7280", marginBottom: 10, textAlign: "left" }}>
-            Continue where you left off
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {pastSessions.map(session => (
-              <button
-                key={session.session_id}
-                onClick={() => {
-                  sessionStorage.setItem('edutrace_session_id', session.session_id)
-                  sessionStorage.setItem('edutrace_topic', session.topic)
-                  navigate('/chat', {
-                    state: { session_id: session.session_id, topic: session.topic }
-                  })
-                }}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "12px 16px",
-                  backgroundColor: "#fff",
-                  border: "1.5px solid #E5E7EB",
-                  borderRadius: 12,
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontFamily: "Inter, sans-serif",
-                  transition: "border-color 0.15s, box-shadow 0.15s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "#A5B4FC"
-                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(79,70,229,0.1)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#E5E7EB"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              >
-                <div>
-                  <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#111827" }}>
-                    {session.topic}
-                  </p>
-                  <p style={{ margin: "2px 0 0", fontSize: 12, color: "#9CA3AF" }}>
-                    {session.roadmap_generated
-                      ? `Week ${session.current_week} of ${session.total_weeks}`
-                      : session.diagnostic_complete
-                      ? 'Roadmap not generated yet'
-                      : 'Diagnostic in progress'}
-                  </p>
-                </div>
-                <span style={{ fontSize: 12, color: "#4F46E5", fontWeight: 500 }}>
-                  Resume →
-                </span>
-              </button>
-            ))}
-          </div>
+      {/* Stats Row */}
+      {!sessionsLoading && (
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px 40px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          {[
+            { label: "Sessions Started", value: pastSessions.length },
+            { label: "Topics Explored", value: [...new Set(pastSessions.map(s => s.topic))].length },
+            { label: "Roadmaps Generated", value: pastSessions.filter(s => s.roadmap_generated).length },
+            { label: "Weeks Completed", value: pastSessions.reduce((acc, s) => acc + Math.max(0, (s.current_week || 1) - 1), 0) },
+          ].map((stat, i) => (
+            <div key={i} style={{ backgroundColor: "#0d0d1f", border: "1px solid rgba(0,255,247,0.12)", borderRadius: 0, padding: "20px 24px", textAlign: "center" }}>
+              <p style={{ fontSize: 26, fontWeight: 700, color: "#00fff7", margin: 0 }}>{stat.value}</p>
+              <p style={{ fontSize: 10, color: "#4a7a7a", marginTop: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>{stat.label}</p>
+            </div>
+          ))}
         </div>
       )}
 
-      <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 48 }}>Powered by Gemini API</p>
+      {/* Two Column Layout */}
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: pastSessions.length > 0 ? "1fr 1fr" : "1fr", gap: 24 }}>
+        
+        {/* Left: Continue Learning */}
+        {!sessionsLoading && pastSessions.length > 0 && (
+          <div>
+            <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.16em" }}>
+              Continue Learning
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {pastSessions.map(session => {
+                const progress = session.total_weeks > 0 ? ((session.current_week - 1) / session.total_weeks) * 100 : 0
+                return (
+                  <button
+                    key={session.session_id}
+                    onClick={() => {
+                      sessionStorage.setItem('edutrace_session_id', session.session_id)
+                      sessionStorage.setItem('edutrace_topic', session.topic)
+                      navigate('/chat', { state: { session_id: session.session_id, topic: session.topic } })
+                    }}
+                    style={{ width: "100%", display: "flex", flexDirection: "column", padding: 16, backgroundColor: "#0d0d1f", border: "1.5px solid rgba(0,255,247,0.12)", borderRadius: 0, cursor: "pointer", textAlign: "left", fontFamily: "'JetBrains Mono', monospace", transition: "all 0.08s ease", boxShadow: "none" }}
+                    onMouseEnter={(e) => { 
+                      e.currentTarget.style.borderColor = "rgba(0,255,247,0.5)"; 
+                      e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.03)";
+                      e.currentTarget.style.boxShadow = "3px 3px 0 rgba(0,255,247,0.2)";
+                      e.currentTarget.style.transform = "translate(-1px,-1px)";
+                    }}
+                    onMouseLeave={(e) => { 
+                      e.currentTarget.style.borderColor = "rgba(0,255,247,0.12)"; 
+                      e.currentTarget.style.backgroundColor = "#0d0d1f";
+                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.transform = "none";
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10, width: "100%" }}>
+                      <p style={{ margin: 0, fontSize: 13, fontWeight: 500, color: "#e0f7f7" }}>
+                        {session.topic.charAt(0).toUpperCase() + session.topic.slice(1)}
+                      </p>
+                      <span style={{ fontSize: 11, color: "#00fff7", letterSpacing: "0.08em", flexShrink: 0, marginLeft: 8 }}>
+                        Resume →
+                      </span>
+                    </div>
+                    <p style={{ margin: "0 0 10px", fontSize: 11, color: "#4a7a7a" }}>
+                      {session.roadmap_generated ? `Week ${session.current_week} of ${session.total_weeks}` : session.diagnostic_complete ? 'Roadmap not generated yet' : 'Diagnostic in progress'}
+                    </p>
+                    {session.roadmap_generated && (
+                      <div style={{ height: 3, backgroundColor: "rgba(0,255,247,0.06)", borderRadius: 0, overflow: "hidden", width: "100%" }}>
+                        <div style={{ height: "100%", width: `${progress}%`, backgroundColor: "#00fff7", boxShadow: "0 0 4px #00fff7", transition: "width 0.3s" }} />
+                      </div>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Right: Tips */}
+        <div>
+          <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.16em" }}>
+            Popular Topics
+          </p>
+          <div style={{ backgroundColor: "#0d0d1f", border: "1.5px solid rgba(0,255,247,0.12)", borderRadius: 0, padding: 20 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+              {["React", "Machine Learning", "System Design", "Python", "Data Structures", "Docker", "TypeScript", "FastAPI"].map(t => (
+                <button
+                  key={t}
+                  onClick={() => { setTopic(t); }}
+                  style={{ padding: "5px 12px", borderRadius: 0, backgroundColor: "transparent", border: "1px solid rgba(0,255,247,0.18)", color: "#4a7a7a", fontSize: 12, cursor: "pointer", transition: "all 0.08s", fontFamily: "'JetBrains Mono', monospace" }}
+                  onMouseEnter={(e) => { 
+                    e.currentTarget.style.borderColor = "#00fff7";
+                    e.currentTarget.style.color = "#00fff7";
+                    e.currentTarget.style.boxShadow = "2px 2px 0 rgba(0,255,247,0.2)";
+                  }}
+                  onMouseLeave={(e) => { 
+                    e.currentTarget.style.borderColor = "rgba(0,255,247,0.18)";
+                    e.currentTarget.style.color = "#4a7a7a";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+            <div style={{ borderTop: "1px solid rgba(0,255,247,0.08)", paddingTop: 16 }}>
+              <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 8 }}>Pro Tip</p>
+              <p style={{ fontSize: 12, color: "#4a7a7a", lineHeight: 1.7, margin: 0 }}>
+                Be specific with your topic. "React hooks for beginners" gives a better roadmap than just "React".
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style={{ fontSize: 10, color: "#4a7a7a", marginTop: 48, textAlign: "center" }}>Powered by Gemini API</p>
       <FloatingDock items={dockItems} />
     </div>
   );

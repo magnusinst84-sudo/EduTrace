@@ -4,27 +4,31 @@ import ReactMarkdown from "react-markdown";
 
 export function MessageBubble({ role, content, timestamp, stuckMode }) {
   const isUser = role === "user";
+  const isModeSwitch = !isUser && content.toLowerCase().includes("switching to");
+
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: isUser ? "flex-end" : "flex-start",
+        alignItems: isModeSwitch ? "center" : isUser ? "flex-end" : "flex-start",
         marginBottom: 16,
+        width: "100%",
       }}
     >
-      {stuckMode && !isUser && (
+      {stuckMode && !isUser && !isModeSwitch && (
         <span
           style={{
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: 600,
-            color: "#92400E",
-            backgroundColor: "#FEF3C7",
+            color: "#00fff7",
+            backgroundColor: "#12122a",
+            border: "1px solid rgba(0,255,247,0.4)",
             padding: "2px 8px",
-            borderRadius: 9999,
+            borderRadius: 0,
             marginBottom: 4,
             textTransform: "uppercase",
-            letterSpacing: "0.04em",
+            letterSpacing: "0.14em",
           }}
         >
           {stuckMode}
@@ -32,19 +36,35 @@ export function MessageBubble({ role, content, timestamp, stuckMode }) {
       )}
       <div
         className="message-bubble-content"
-        style={{
-          maxWidth: "80%",
-          padding: "10px 14px",
-          borderRadius: isUser ? "16px 16px 4px 16px" : "4px 16px 16px 16px",
-          backgroundColor: isUser ? "#4F46E5" : "#EEF2FF",
-          color: isUser ? "#fff" : "#1E1B4B",
-          borderLeft: !isUser ? "3px solid #4F46E5" : "none",
-          fontSize: 14,
-          lineHeight: 1.6,
-          fontFamily: "Inter, sans-serif",
-        }}
+        style={
+          isModeSwitch
+            ? {
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: 0,
+                backgroundColor: "rgba(191,0,255,0.08)",
+                border: "1px solid rgba(191,0,255,0.25)",
+                color: "#bf00ff",
+                fontSize: 11,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textAlign: "center",
+                fontFamily: "'JetBrains Mono', monospace",
+              }
+            : {
+                maxWidth: "80%",
+                padding: "12px 16px",
+                borderRadius: 0,
+                backgroundColor: isUser ? "#12122a" : "rgba(255,255,255,0.06)",
+                color: isUser ? "#e0f7f7" : "#e2e8f0",
+                borderLeft: isUser ? "2px solid #bf00ff" : "3px solid rgba(0,255,247,0.4)",
+                fontSize: 14,
+                lineHeight: 1.7,
+                fontFamily: "'JetBrains Mono', monospace",
+              }
+        }
       >
-        {isUser ? content : (
+        {isUser || isModeSwitch ? content : (
           <ReactMarkdown
             components={{
               p: ({ children }) => <p style={{ margin: "4px 0" }}>{children}</p>,
@@ -52,20 +72,20 @@ export function MessageBubble({ role, content, timestamp, stuckMode }) {
               code: ({ inline, children }) =>
                 inline ? (
                   <code style={{
-                    backgroundColor: isUser ? "rgba(255,255,255,0.15)" : "rgba(79,70,229,0.08)",
+                    backgroundColor: "rgba(0,255,247,0.08)",
+                    color: "#00fff7",
                     padding: "1px 5px",
-                    borderRadius: 4,
+                    borderRadius: 0,
                     fontSize: 13,
-                    fontFamily: "'JetBrains Mono', monospace",
                   }}>{children}</code>
                 ) : (
                   <pre style={{
-                    backgroundColor: isUser ? "rgba(0,0,0,0.2)" : "#1E1B4B",
-                    color: "#E0E7FF",
+                    backgroundColor: "#05050f",
+                    color: "#e0f7f7",
+                    border: "1px solid rgba(0,255,247,0.15)",
                     padding: "10px 12px",
-                    borderRadius: 8,
+                    borderRadius: 0,
                     fontSize: 12.5,
-                    fontFamily: "'JetBrains Mono', monospace",
                     overflowX: "auto",
                     margin: "8px 0",
                   }}><code>{children}</code></pre>
@@ -77,7 +97,7 @@ export function MessageBubble({ role, content, timestamp, stuckMode }) {
               h2: ({ children }) => <h2 style={{ fontSize: 16, fontWeight: 700, margin: "8px 0 4px" }}>{children}</h2>,
               h3: ({ children }) => <h3 style={{ fontSize: 15, fontWeight: 600, margin: "6px 0 3px" }}>{children}</h3>,
               a: ({ href, children }) => (
-                <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: isUser ? "#C7D2FE" : "#4F46E5", textDecoration: "underline" }}>
+                <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: "#00fff7", textDecoration: "underline" }}>
                   {children}
                 </a>
               ),
@@ -87,9 +107,11 @@ export function MessageBubble({ role, content, timestamp, stuckMode }) {
           </ReactMarkdown>
         )}
       </div>
-      <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>
-        {timestamp}
-      </span>
+      {!isModeSwitch && (
+        <span style={{ fontSize: 11, color: "#4a7a7a", marginTop: 4 }}>
+          {timestamp}
+        </span>
+      )}
     </div>
   );
 }

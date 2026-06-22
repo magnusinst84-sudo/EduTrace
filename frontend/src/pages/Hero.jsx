@@ -3,25 +3,11 @@ import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { TextGenerateEffect } from "../components/ui/text-generate"
-import { Vortex } from "../components/ui/vortex"
-import { ArrowRight, BookOpen, Brain, Map, Zap, 
-         Target, TrendingUp } from "lucide-react"
+import { ArrowRight, BookOpen, Brain, Map, Zap, Target, TrendingUp } from "lucide-react"
 
 export default function Hero() {
   const navigate = useNavigate()
   const { user } = useAuth()
-
-  const [particleCount, setParticleCount] = useState(
-    typeof window !== "undefined" && window.innerWidth < 768 ? 150 : 400
-  )
-
-  useEffect(() => {
-    const handleResize = () => {
-      setParticleCount(window.innerWidth < 768 ? 150 : 400)
-    }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
 
   useEffect(() => {
     if (user) navigate("/home")
@@ -29,32 +15,32 @@ export default function Hero() {
 
   const features = [
     {
-      icon: <Brain size={22} className="text-indigo-400" />,
+      icon: <Brain size={22} color="#00fff7" />,
       title: "Adaptive Diagnostics",
       desc: "3 questions that infer your exact knowledge level before building your plan.",
     },
     {
-      icon: <Map size={22} className="text-indigo-400" />,
+      icon: <Map size={22} color="#00fff7" />,
       title: "Grounded Roadmaps",
       desc: "Week-by-week learning plans built from real roadmap.sh content, not hallucinations.",
     },
     {
-      icon: <BookOpen size={22} className="text-indigo-400" />,
+      icon: <BookOpen size={22} color="#00fff7" />,
       title: "Stuck Mode",
       desc: "Agent detects when you're confused and automatically shifts to simpler explanations.",
     },
     {
-      icon: <Zap size={22} className="text-indigo-400" />,
+      icon: <Zap size={22} color="#00fff7" />,
       title: "62+ Topics",
       desc: "From React to System Design, Docker to Data Structures — all grounded in real content.",
     },
     {
-      icon: <Target size={22} className="text-indigo-400" />,
+      icon: <Target size={22} color="#00fff7" />,
       title: "Goal Aware",
       desc: "Tailored for job prep, project building, exam study, or pure curiosity.",
     },
     {
-      icon: <TrendingUp size={22} className="text-indigo-400" />,
+      icon: <TrendingUp size={22} color="#00fff7" />,
       title: "Progress Tracking",
       desc: "Visual timeline of your roadmap with week-by-week completion tracking.",
     },
@@ -68,49 +54,78 @@ export default function Hero() {
   ]
 
   return (
-    <div style={{ backgroundColor: "#0f0f1a", minHeight: "100vh" }}>
+    <div style={{
+      backgroundColor: "#05050f",
+      backgroundImage: "radial-gradient(circle, rgba(0,255,247,0.15) 1px, transparent 1px)",
+      backgroundSize: "32px 32px",
+      minHeight: "100vh",
+      fontFamily: "'JetBrains Mono', monospace",
+      position: "relative",
+      overflow: "hidden"
+    }} className="scanlines">
 
       {/* Navbar */}
       <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center 
-                   justify-between px-8 py-4 border-b border-white/5"
         style={{
-          backgroundColor: "rgba(15,15,26,0.85)",
-          backdropFilter: "blur(12px)",
+          position: "fixed",
+          top: 0, left: 0, right: 0, zIndex: 50,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "16px 32px",
+          backgroundColor: "#0d0d1f",
+          borderBottom: "1.5px solid rgba(0,255,247,0.15)",
         }}
       >
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center 
-                          justify-center">
-            <Brain size={16} className="text-white" />
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Brain size={16} color="#00fff7" />
           </div>
-          <span className="font-bold text-white text-lg">EduTrace</span>
+          <span style={{ fontWeight: 700, color: "#00fff7", fontSize: 16, letterSpacing: "0.2em" }}>EDUTRACE</span>
         </div>
         <button
           onClick={() => navigate("/login")}
-          className="px-4 py-2 text-sm font-medium text-indigo-300 
-                     border border-indigo-500/30 rounded-lg 
-                     hover:bg-indigo-500/10 transition-colors cursor-pointer"
+          style={{
+            backgroundColor: "transparent",
+            border: "1.5px solid rgba(0,255,247,0.3)",
+            borderRadius: 0,
+            color: "#00fff7",
+            fontSize: 11,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            padding: "8px 16px",
+            cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace",
+            transition: "all 0.1s"
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.1)"; e.currentTarget.style.borderColor = "#00fff7"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "rgba(0,255,247,0.3)"; }}
         >
           Sign in
         </button>
       </nav>
 
+      {/* Hero Content */}
       <div 
-        className="flex flex-col items-center justify-center 
-                   text-center px-6 pt-32 pb-16"
-        style={{ backgroundColor: "#0f0f1a" }}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", zIndex: 1 }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1.5 
-                     rounded-full border border-indigo-500/30 
-                     text-indigo-300 text-xs font-medium mb-6"
-          style={{ backgroundColor: "rgba(99,102,241,0.1)" }}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "6px 14px",
+            borderRadius: 0,
+            border: "1px solid rgba(0,255,247,0.3)",
+            backgroundColor: "rgba(0,255,247,0.05)",
+            color: "#00fff7",
+            fontSize: 10,
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.14em",
+            marginBottom: 24
+          }}
         >
-          <Zap size={12} />
+          <Zap size={12} color="#00fff7" />
           Powered by Gemini API
         </motion.div>
 
@@ -118,18 +133,16 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="font-bold text-white"
-          style={{ fontSize: "clamp(2.5rem, 8vw, 5.5rem)", lineHeight: 1.1 }}
+          style={{ fontSize: "clamp(2.5rem, 8vw, 5.5rem)", lineHeight: 1.1, fontWeight: 700, color: "#e0f7f7", letterSpacing: "0.02em", margin: 0 }}
         >
-          EduTrace
+          EDUTRACE
         </motion.h1>
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="font-bold text-indigo-400 mt-2"
-          style={{ fontSize: "clamp(1.5rem, 5vw, 2.75rem)", lineHeight: 1.2 }}
+          style={{ fontSize: "clamp(1.2rem, 4vw, 2rem)", lineHeight: 1.2, fontWeight: 500, color: "#bf00ff", letterSpacing: "0.05em", marginTop: 8 }}
         >
           Learn anything. Smarter.
         </motion.h2>
@@ -138,11 +151,11 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-5 max-w-lg"
+          style={{ marginTop: 24, maxWidth: 500 }}
         >
           <TextGenerateEffect
             words="Type a topic. Answer 3 questions. Get a personalized week-by-week roadmap powered by Gemini."
-            className="text-gray-400 text-base leading-relaxed"
+            className="text-gray-400 text-sm leading-relaxed tracking-wide"
           />
         </motion.div>
 
@@ -150,51 +163,78 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="mt-10 flex flex-col sm:flex-row items-center gap-4"
+          style={{ marginTop: 48, display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 20 }}
         >
           <motion.button
             onClick={() => navigate("/login")}
-            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-2 px-10 py-4 bg-indigo-600 
-                       hover:bg-indigo-500 text-white font-semibold 
-                       rounded-xl transition-colors shadow-lg 
-                       shadow-indigo-500/25 text-base cursor-pointer"
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "16px 32px",
+              backgroundColor: "transparent",
+              border: "1.5px solid #00fff7",
+              borderRadius: 0,
+              color: "#00fff7",
+              fontSize: 13,
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0 #00fff7",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.1s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.1)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translate(4px,4px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.boxShadow = "4px 4px 0 #00fff7";
+              e.currentTarget.style.transform = "none";
+            }}
           >
             Get Started Free
-            <ArrowRight size={20} />
+            <ArrowRight size={16} />
           </motion.button>
           <motion.button
             onClick={() => {
               document.getElementById("how-it-works")
                 ?.scrollIntoView({ behavior: "smooth" })
             }}
-            whileHover={{ scale: 1.02 }}
-            className="px-8 py-4 text-gray-300 hover:text-white 
-                       border border-white/10 hover:border-white/20
-                       rounded-xl transition-colors text-base font-medium cursor-pointer"
+            style={{
+              padding: "16px 32px",
+              backgroundColor: "transparent",
+              border: "1px solid rgba(0,255,247,0.2)",
+              borderRadius: 0,
+              color: "#4a7a7a",
+              fontSize: 13,
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.1s"
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.5)"; e.currentTarget.style.color = "#00fff7"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(0,255,247,0.2)"; e.currentTarget.style.color = "#4a7a7a"; }}
           >
             See how it works ↓
           </motion.button>
         </motion.div>
       </div>
 
-      {/* SECTION 2: Vortex CTA strip */}
-      <Vortex
-        containerClassName="w-full"
-        className="flex flex-col items-center justify-center 
-                   py-20 px-6 text-center"
-        backgroundColor="#0a0a14"
-        baseHue={240}
-        particleCount={particleCount}
-        rangeSpeed={1.2}
+      {/* SECTION 2: How it works strip */}
+      <div
+        className="flex flex-col items-center justify-center py-20 px-6 text-center w-full"
+        style={{ position: "relative", zIndex: 1 }}
       >
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-xs font-semibold tracking-widest text-indigo-400 
-                     uppercase mb-4"
+          style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.2em", color: "#00fff7", textTransform: "uppercase", marginBottom: 16 }}
         >
           How it works
         </motion.p>
@@ -202,84 +242,92 @@ export default function Hero() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl font-bold text-white mb-12 max-w-lg"
+          style={{ fontSize: "clamp(1.5rem, 4vw, 2.2rem)", fontWeight: 700, color: "#e0f7f7", marginBottom: 48, maxWidth: 600, letterSpacing: "0.02em" }}
         >
           From zero to roadmap in under 2 minutes
         </motion.h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl w-full px-4 mb-8">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, width: "100%", maxWidth: 1000, padding: "0 16px", marginBottom: 32 }}>
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="flex flex-col items-center text-center p-4 
-                         rounded-2xl border border-white/10"
-              style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+              style={{
+                display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
+                padding: 24,
+                backgroundColor: "rgba(0,255,247,0.02)",
+                border: "1px solid rgba(0,255,247,0.1)",
+                borderRadius: 0,
+              }}
             >
-              <span className="text-2xl font-black text-indigo-500/40 mb-3">
+              <span style={{ fontSize: 24, fontWeight: 700, color: "rgba(0,255,247,0.3)", marginBottom: 16, fontFamily: "'JetBrains Mono', monospace" }}>
                 {step.num}
               </span>
-              <p className="text-white font-semibold text-sm mb-1">
+              <p style={{ color: "#e0f7f7", fontWeight: 500, fontSize: 13, marginBottom: 8, letterSpacing: "0.05em", textTransform: "uppercase" }}>
                 {step.title}
               </p>
-              <p className="text-gray-500 text-xs leading-relaxed">
+              <p style={{ color: "#4a7a7a", fontSize: 11, lineHeight: 1.6 }}>
                 {step.desc}
               </p>
             </motion.div>
           ))}
         </div>
-      </Vortex>
+      </div>
 
-      {/* SECTION 3: Features grid — dot background */}
+      {/* SECTION 3: Features grid */}
       <div
         id="how-it-works"
-        className="relative pt-16 pb-24 px-6 flex flex-col items-center justify-center w-full"
         style={{
-          backgroundImage: "radial-gradient(#2a2a3e 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-          backgroundColor: "#0f0f1a",
+          position: "relative", padding: "80px 24px", display: "flex", flexDirection: "column", alignItems: "center", width: "100%",
+          zIndex: 1
         }}
       >
-        <div className="max-w-5xl w-full mx-auto">
+        <div style={{ maxWidth: 1000, width: "100%" }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-14"
+            style={{ textAlign: "center", marginBottom: 64 }}
           >
-            <p className="text-xs font-semibold tracking-widest text-indigo-400 
-                          uppercase mb-3">
+            <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.2em", color: "#bf00ff", textTransform: "uppercase", marginBottom: 16 }}>
               Features
             </p>
-            <h2 className="text-3xl font-bold text-white">
+            <h2 style={{ fontSize: "clamp(1.5rem, 4vw, 2.2rem)", fontWeight: 700, color: "#e0f7f7", letterSpacing: "0.02em" }}>
               Everything you need to learn faster
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full mb-12">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, width: "100%", marginBottom: 64 }}>
             {features.map((f, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={{ y: -4 }}
-                className="p-6 rounded-2xl border border-white/10 
-                           hover:border-indigo-500/30 transition-all 
-                           cursor-default"
-                style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+                style={{
+                  padding: 24,
+                  backgroundColor: "#0d0d1f",
+                  border: "1.5px solid rgba(0,255,247,0.15)",
+                  borderRadius: 0,
+                  transition: "border-color 0.15s ease",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = "#00fff7"}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = "rgba(0,255,247,0.15)"}
               >
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 
-                                flex items-center justify-center mb-4 
-                                border border-indigo-500/20">
+                <div style={{
+                  width: 40, height: 40, borderRadius: 0,
+                  backgroundColor: "rgba(0,255,247,0.05)",
+                  border: "1px solid rgba(0,255,247,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20
+                }}>
                   {f.icon}
                 </div>
-                <h3 className="font-semibold text-white mb-2 text-sm">
+                <h3 style={{ fontWeight: 500, color: "#e0f7f7", marginBottom: 8, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   {f.title}
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p style={{ fontSize: 12, color: "#4a7a7a", lineHeight: 1.6, margin: 0 }}>
                   {f.desc}
                 </p>
               </motion.div>
@@ -287,8 +335,7 @@ export default function Hero() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mt-0 pt-10 
-                          border-t border-white/5 w-full">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, paddingTop: 48, borderTop: "1px solid rgba(0,255,247,0.1)", width: "100%" }}>
             {[
               { value: "62+", label: "Topics covered" },
               { value: "3", label: "Diagnostic questions" },
@@ -299,12 +346,12 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ delay: i * 0.1 + 0.3 }}
-                className="text-center"
+                style={{ textAlign: "center" }}
               >
-                <p className="text-2xl font-bold text-indigo-400">
+                <p style={{ fontSize: 28, fontWeight: 700, color: "#bf00ff", margin: 0, letterSpacing: "0.05em" }}>
                   {stat.value}
                 </p>
-                <p className="text-xs text-gray-600 mt-1">{stat.label}</p>
+                <p style={{ fontSize: 10, color: "#4a7a7a", marginTop: 8, letterSpacing: "0.1em", textTransform: "uppercase" }}>{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -313,35 +360,60 @@ export default function Hero() {
 
       {/* SECTION 4: Final CTA */}
       <div
-        className="pt-20 pb-16 px-6 text-center border-t border-white/5 flex flex-col items-center justify-center w-full"
-        style={{ backgroundColor: "#0a0a14" }}
+        style={{
+          padding: "80px 24px", textAlign: "center", borderTop: "1px solid rgba(0,255,247,0.1)",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%",
+          backgroundColor: "#0d0d1f",
+          position: "relative",
+          zIndex: 1
+        }}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-xl w-full mx-auto flex flex-col items-center justify-center"
+          style={{ maxWidth: 600, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}
         >
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 style={{ fontSize: "clamp(1.5rem, 4vw, 2.2rem)", fontWeight: 700, color: "#e0f7f7", marginBottom: 16, letterSpacing: "0.02em" }}>
             Ready to learn smarter?
           </h2>
-          <p className="text-gray-500 mb-8 text-sm leading-relaxed">
-            Join EduTrace and get a personalized learning roadmap 
-            in under 2 minutes.
+          <p style={{ color: "#4a7a7a", marginBottom: 32, fontSize: 13, lineHeight: 1.6 }}>
+            Join EduTrace and get a personalized learning roadmap in under 2 minutes.
           </p>
           <motion.button
             onClick={() => navigate("/login")}
-            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 px-8 py-4 
-                       bg-indigo-600 hover:bg-indigo-500 text-white 
-                       font-bold rounded-xl transition-colors shadow-lg 
-                       shadow-indigo-500/30 text-sm cursor-pointer"
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "16px 32px",
+              backgroundColor: "transparent",
+              border: "1.5px solid #bf00ff",
+              borderRadius: 0,
+              color: "#bf00ff",
+              fontSize: 13,
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0 #bf00ff",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.1s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(191,0,255,0.1)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translate(4px,4px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.boxShadow = "4px 4px 0 #bf00ff";
+              e.currentTarget.style.transform = "none";
+            }}
           >
             Start for free
             <ArrowRight size={16} />
           </motion.button>
-          <p className="text-gray-700 text-xs mt-6">
+          <p style={{ color: "#4a7a7a", fontSize: 10, marginTop: 32, letterSpacing: "0.1em", textTransform: "uppercase" }}>
             Powered by Gemini API
           </p>
         </motion.div>

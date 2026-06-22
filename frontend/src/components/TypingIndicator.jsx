@@ -7,9 +7,9 @@ export function TypingIndicator() {
       <div
         style={{
           padding: "10px 16px",
-          borderRadius: "4px 16px 16px 16px",
-          backgroundColor: "#EEF2FF",
-          borderLeft: "3px solid #4F46E5",
+          borderRadius: 0,
+          backgroundColor: "#0d0d1f",
+          borderLeft: "2px solid #00fff7",
           display: "flex",
           gap: 4,
           alignItems: "center",
@@ -19,10 +19,10 @@ export function TypingIndicator() {
           <span
             key={i}
             style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              backgroundColor: "#4F46E5",
+              width: 5,
+              height: 5,
+              borderRadius: 0,
+              backgroundColor: "#00fff7",
               opacity: 0.7,
               animation: `edutrace-bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
               display: "inline-block",
@@ -30,12 +30,7 @@ export function TypingIndicator() {
           />
         ))}
       </div>
-      <style>{`
-        @keyframes edutrace-bounce {
-          0%, 60%, 100% { transform: translateY(0); }
-          30% { transform: translateY(-6px); }
-        }
-      `}</style>
+
     </div>
   );
 }

@@ -16,23 +16,20 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
   const [open, setOpen] = useState(status === "current");
   const [showDetails, setShowDetails] = useState(false);
 
-  const borderColor = status === "current" ? "#4F46E5" : status === "completed" ? "#10B981" : "#E5E7EB";
-  const shadow = status === "current" ? "0 2px 8px rgba(79,70,229,0.12)" : "none";
-
   const cardDetails = {
     title: `Week ${week} Details`,
     subtitle: topic,
     content: (
-      <div className="space-y-4">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {goal && (
-          <p className="text-gray-600 text-sm leading-relaxed">{goal}</p>
+          <p style={{ color: "#4a7a7a", fontSize: 13, lineHeight: 1.6, margin: 0 }}>{goal}</p>
         )}
         {concepts?.length > 0 && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Topics</p>
-            <div className="flex flex-wrap gap-2">
+            <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 8 }}>Topics</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {concepts.map((t, i) => (
-                <span key={i} className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm rounded-full border border-indigo-100">
+                <span key={i} style={{ padding: "4px 10px", backgroundColor: "transparent", color: "#00fff7", border: "1px solid rgba(0,255,247,0.3)", borderRadius: 0, fontSize: 11 }}>
                   {t}
                 </span>
               ))}
@@ -41,15 +38,17 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
         )}
         {resources?.length > 0 && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Resources</p>
-            <div className="space-y-2">
+            <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 8 }}>Resources</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {resources.map((r, i) => (
                 <a
                   key={i}
                   href={getResourceUrl(r)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-sm text-indigo-600 hover:underline truncate"
+                  style={{ display: "block", fontSize: 12, color: "#bf00ff", textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "#00fff7"}
+                  onMouseLeave={(e) => e.currentTarget.style.color = "#bf00ff"}
                 >
                   {getResourceLabel(r)}
                 </a>
@@ -63,16 +62,16 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
 
   return (
     <motion.div
-      whileHover={{ scale: 1.01 }}
+      whileHover={{ x: -1, y: -1 }}
       transition={{ duration: 0.15 }}
       style={{
-        borderRadius: 10,
-        border: `1.5px solid ${borderColor}`,
-        backgroundColor: "#fff",
+        borderRadius: 0,
+        border: status === "current" ? "1.5px solid #00fff7" : status === "completed" ? "1.5px solid rgba(0,255,247,0.3)" : "1.5px solid rgba(0,255,247,0.08)",
+        backgroundColor: "#0d0d1f",
         marginBottom: 8,
         overflow: "hidden",
-        boxShadow: shadow,
-        opacity: status === "upcoming" ? 0.6 : 1,
+        boxShadow: status === "current" ? "3px 3px 0 #00fff7" : "none",
+        opacity: status === "upcoming" ? 0.5 : 1,
       }}
     >
       <button
@@ -92,40 +91,42 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
           {status === "completed" ? (
-            <span style={{ width: 20, height: 20, borderRadius: "50%", backgroundColor: "#10B981", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <Check size={12} color="#fff" strokeWidth={3} />
-            </span>
+            <div style={{ width: 16, height: 16, borderRadius: 0, backgroundColor: "#00fff7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Check size={10} color="#05050f" strokeWidth={3} />
+            </div>
+          ) : status === "current" ? (
+            <div style={{ width: 16, height: 16, borderRadius: 0, border: "2px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div style={{ width: 6, height: 6, backgroundColor: "#00fff7" }} />
+            </div>
           ) : (
-            <span style={{ width: 20, height: 20, borderRadius: "50%", border: `2px solid ${status === "current" ? "#4F46E5" : "#E5E7EB"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              {status === "current" && <Circle size={8} color="#4F46E5" fill="#4F46E5" />}
-            </span>
+            <div style={{ width: 16, height: 16, borderRadius: 0, border: "1px solid rgba(0,255,247,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }} />
           )}
           <div>
-            <div style={{ fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: 1 }}>
+            <div style={{ fontSize: 10, color: "#00fff7", textTransform: "uppercase", letterSpacing: "0.18em", fontWeight: 500, marginBottom: 1 }}>
               Week {week}
             </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: status === "completed" ? "#6B7280" : "#111827" }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: status === "completed" ? "#4a7a7a" : "#e0f7f7" }}>
               {topic}
             </div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center", gap: 3 }}>
+          <span style={{ fontSize: 11, color: "#4a7a7a", display: "flex", alignItems: "center", gap: 3 }}>
             <Clock size={11} /> {hours}h
           </span>
-          {open ? <ChevronUp size={16} color="#6B7280" /> : <ChevronDown size={16} color="#6B7280" />}
+          {open ? <ChevronUp size={16} color="#4a7a7a" /> : <ChevronDown size={16} color="#4a7a7a" />}
         </div>
       </button>
 
       {open && (
-        <div style={{ padding: "0 14px 14px", borderTop: "1px solid #E5E7EB" }}>
+        <div style={{ padding: "0 14px 14px", borderTop: "1px solid rgba(0,255,247,0.1)" }}>
           <div style={{ marginTop: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+            <div style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
               Concepts
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {(concepts ?? []).map((c, i) => (
-                <span key={i} style={{ padding: "3px 10px", backgroundColor: "#EEF2FF", color: "#3730A3", borderRadius: 9999, fontSize: 12, fontWeight: 500 }}>
+                <span key={i} style={{ padding: "2px 8px", backgroundColor: "transparent", color: "#00fff7", border: "1px solid rgba(0,255,247,0.25)", borderRadius: 0, fontSize: 11 }}>
                   {c}
                 </span>
               ))}
@@ -134,7 +135,7 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
 
           {resources?.length > 0 && (
             <div style={{ marginTop: 12 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+              <div style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
                 Resources
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -144,9 +145,9 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
                     href={getResourceUrl(r)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ fontSize: 12, color: "#4F46E5", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
-                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
-                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
+                    style={{ fontSize: 12, color: "#bf00ff", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, borderBottom: "1px solid rgba(191,0,255,0.15)", paddingBottom: 2 }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = "#00fff7"; e.currentTarget.style.borderBottomColor = "rgba(0,255,247,0.3)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = "#bf00ff"; e.currentTarget.style.borderBottomColor = "rgba(191,0,255,0.15)"; }}
                   >
                     <ExternalLink size={11} /> {getResourceLabel(r)}
                   </a>
@@ -159,16 +160,17 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
             <button
               onClick={() => setShowDetails(true)}
               style={{
-                fontSize: 12,
-                color: "#4F46E5",
-                background: "none",
-                border: "none",
+                fontSize: 11,
+                color: "#00fff7",
+                background: "transparent",
+                border: "1px solid rgba(0,255,247,0.3)",
                 cursor: "pointer",
-                fontWeight: 600,
-                padding: "4px 8px",
-                borderRadius: 4,
-                backgroundColor: "#EEF2FF"
+                padding: "4px 10px",
+                borderRadius: 0,
+                letterSpacing: "0.08em",
               }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(0,255,247,0.08)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
             >
               View Details
             </button>
