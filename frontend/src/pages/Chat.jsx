@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BookOpen, RotateCcw, Send, LogOut, X, ChevronLeft, ChevronRight, Home, MessageSquare, Map } from "lucide-react";
+import { BookOpen, RotateCcw, Send, LogOut, X, ChevronLeft, ChevronRight, Home, MessageSquare, Map, Download } from "lucide-react";
 import { MessageBubble } from "../components/MessageBubble";
 import { TypingIndicator } from "../components/TypingIndicator";
 import { RoadmapWeekCard } from "../components/RoadmapWeekCard";
 import { WorldStatePanel } from "../components/WorldStatePanel";
 import { QuizPanel } from "../components/QuizPanel";
+import { exportRoadmapPDF } from "../utils/exportRoadmapPDF";
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/client'
@@ -44,14 +45,25 @@ function normalizeRoadmap(rawRoadmap, currentWeek = 1) {
   }))
 }
 
-function RoadmapPanel({ roadmap, currentWeek, onClose }) {
+function RoadmapPanel({ roadmap, currentWeek, onClose, topic, level }) {
   return (
     <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
         <h2 className="text-sm font-semibold text-gray-800">Your Roadmap</h2>
-        <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-          <X size={16} />
-        </button>
+        <div className="flex items-center gap-2">
+          {roadmap && roadmap.length > 0 && (
+            <button 
+              onClick={() => exportRoadmapPDF(roadmap, topic, level)}
+              className="flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors"
+              title="Export Roadmap as PDF"
+            >
+              <Download size={14} /> Export PDF
+            </button>
+          )}
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+            <X size={16} />
+          </button>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {roadmap.map((week, index) => (
@@ -373,7 +385,7 @@ export default function Chat() {
       {!isMobile && (
         <div className="flex-shrink-0 overflow-hidden transition-all duration-400 ease-out flex" style={{ width: panelOpen ? '40%' : '0%', opacity: panelOpen ? 1 : 0 }}>
           <div style={{ flex: 1, minWidth: 300 }}>
-            {roadmap?.length > 0 && <RoadmapPanel roadmap={roadmap} currentWeek={worldState?.week || 1} onClose={() => setPanelOpen(false)} />}
+            {roadmap?.length > 0 && <RoadmapPanel roadmap={roadmap} currentWeek={worldState?.week || 1} onClose={() => setPanelOpen(false)} topic={topic} level={worldState?.level} />}
           </div>
           {worldState && (
             <div style={{ width: 280, borderLeft: "1px solid #E5E7EB", backgroundColor: "#fff", padding: 12, overflowY: "auto" }} className="border-l border-gray-100">
@@ -408,7 +420,7 @@ export default function Chat() {
               />
             </div>
           )}
-          <RoadmapPanel roadmap={roadmap || []} currentWeek={worldState?.week || 1} onClose={() => setBottomSheetOpen(false)} />
+          <RoadmapPanel roadmap={roadmap || []} currentWeek={worldState?.week || 1} onClose={() => setBottomSheetOpen(false)} topic={topic} level={worldState?.level} />
         </BottomSheet>
       )}
 
