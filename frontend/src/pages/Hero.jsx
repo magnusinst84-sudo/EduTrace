@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import logo from "../assets/logo.png"
 import { TextGenerateEffect } from "../components/ui/text-generate"
 import { ArrowRight, BookOpen, Brain, Map, Zap, Target, TrendingUp } from "lucide-react"
 
@@ -76,9 +77,7 @@ export default function Hero() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Brain size={16} color="#00fff7" />
-          </div>
+          <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
           <span style={{ fontWeight: 700, color: "#00fff7", fontSize: 16, letterSpacing: "0.2em" }}>EDUTRACE</span>
         </div>
         <button

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import logo from "../assets/logo.png";
 import { BookOpen, Mail, Eye, EyeOff } from "lucide-react";
 import { auth, googleProvider } from '../firebase'
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
@@ -59,9 +60,7 @@ export default function Login() {
       {/* Logo */}
       <div style={{ marginBottom: 32, textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <BookOpen size={16} color="#00fff7" />
-          </div>
+          <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
           <span style={{ fontSize: 16, fontWeight: 700, color: "#00fff7", letterSpacing: "0.24em" }}>EDUTRACE</span>
         </div>
         <p style={{ fontSize: 11, color: "#4a7a7a", margin: 0, letterSpacing: "0.1em" }}>AI-powered adaptive learning paths</p>

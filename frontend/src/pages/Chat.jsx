@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import logo from "../assets/logo.png";
 import { BookOpen, RotateCcw, Send, LogOut, X, ChevronLeft, ChevronRight, Home, MessageSquare, Map, Download } from "lucide-react";
 import { MessageBubble } from "../components/MessageBubble";
 import { TypingIndicator } from "../components/TypingIndicator";
@@ -261,9 +262,7 @@ export default function Chat() {
         {/* Top nav */}
         <header style={{ height: 52, backgroundColor: "#0d0d1f", backdropFilter: "none", borderBottom: "1.5px solid rgba(0,255,247,0.15)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 26, height: 26, borderRadius: 0, backgroundColor: "transparent", border: "1.5px solid #00fff7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <BookOpen size={13} color="#00fff7" />
-            </div>
+            <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: "#00fff7", letterSpacing: "0.18em" }}>EDUTRACE</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
