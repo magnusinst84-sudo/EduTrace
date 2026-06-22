@@ -112,6 +112,7 @@ async def generate_roadmap(session_id: str) -> dict:
     for attempt in range(1, 4):
         # Use gemini_call directly (no search grounding) for speed
         response_text = await gemini_call(prompt, json_mode=False, max_tokens=4096)
+        logger.warning(f"Roadmap raw response (attempt {attempt}): {response_text[:500] if response_text else 'None'}")
 
         try:
             parsed = json.loads(_clean_json_markdown(response_text))
