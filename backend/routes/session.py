@@ -7,7 +7,7 @@ from middleware.sanitize import sanitize_topic
 from agent.state import WorldState
 
 # Lazy import helpers for route handlers to avoid premature db load
-from agent.handlers import run_diagnostic_turn, generate_roadmap, run_adaptive_turn
+from agent.handlers import run_diagnostic_turn, generate_roadmap, run_adaptive_turn, generate_quiz, grade_quiz
 
 router = APIRouter()
 
@@ -17,6 +17,24 @@ TECH_TOPICS = {
     "algorithms",
 }
 
+async def verify_session_ownership(
+    request: Request,
+    session_id: str,
+    _=Depends(verify_firebase_token)
+) -> dict:
+    """
+    Verifies the authenticated user (request.state.uid) owns the given session.
+    Returns the loaded session dict if valid, so route handlers can reuse it
+    instead of loading it twice. Raises 404 if session doesn't exist, 403 if
+    it belongs to a different user.
+    """
+    from db.sessions import load_session
+    loaded = load_session(session_id)
+    if loaded is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if loaded.get("uid") != request.state.uid:
+        raise HTTPException(status_code=403, detail="Access denied")
+    return loaded
 
 class SessionRequest(BaseModel):
     topic: str
@@ -28,6 +46,10 @@ class DiagnosticRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
+
+
+class QuizSubmitRequest(BaseModel):
+    answers: dict
 
 
 @router.post("/session/start")
@@ -59,7 +81,7 @@ async def diagnostic_route(
     request: Request,
     session_id: str,
     body: DiagnosticRequest,
-    _=Depends(verify_firebase_token)
+    _session=Depends(verify_session_ownership)
 ):
     try:
         res = await run_diagnostic_turn(session_id, body.answer)
@@ -73,7 +95,7 @@ async def diagnostic_route(
 async def roadmap_route(
     request: Request,
     session_id: str,
-    _=Depends(verify_firebase_token)
+    _session=Depends(verify_session_ownership)
 ):
     try:
         res = await generate_roadmap(session_id)
@@ -88,10 +110,39 @@ async def chat_route(
     request: Request,
     session_id: str,
     body: ChatRequest,
-    _=Depends(verify_firebase_token)
+    _session=Depends(verify_session_ownership)
 ):
     try:
         res = await run_adaptive_turn(session_id, body.message)
+        return res
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/session/{session_id}/quiz")
+@limiter.limit("5/minute")
+async def quiz_route(
+    request: Request,
+    session_id: str,
+    _session=Depends(verify_session_ownership)
+):
+    try:
+        res = await generate_quiz(session_id)
+        return res
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/session/{session_id}/quiz/submit")
+@limiter.limit("5/minute")
+async def quiz_submit_route(
+    request: Request,
+    session_id: str,
+    body: QuizSubmitRequest,
+    _session=Depends(verify_session_ownership)
+):
+    try:
+        res = await grade_quiz(session_id, body.answers)
         return res
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -102,15 +153,10 @@ async def chat_route(
 async def get_session(
     request: Request,
     session_id: str,
-    _=Depends(verify_firebase_token)
+    _session=Depends(verify_session_ownership)
 ):
-    from db.sessions import load_session
-    loaded = load_session(session_id)
-    if loaded is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-    if loaded.get("uid") != request.state.uid:
-        raise HTTPException(status_code=403, detail="Access denied")
-    return loaded
+    # The dependency already loaded and verified the session!
+    return _session
 
 
 @router.get("/sessions")
@@ -129,13 +175,8 @@ async def get_sessions(
 async def delete_session_route(
     request: Request,
     session_id: str,
-    _=Depends(verify_firebase_token)
+    _session=Depends(verify_session_ownership)
 ):
-    from db.sessions import load_session, delete_session
-    loaded = load_session(session_id)
-    if loaded is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-    if loaded.get("uid") != request.state.uid:
-        raise HTTPException(status_code=403, detail="Access denied")
+    from db.sessions import delete_session
     delete_session(session_id)
     return {"status": "deleted", "session_id": session_id}

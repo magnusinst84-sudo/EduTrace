@@ -36,12 +36,19 @@ def build_prompt_context(topic_slug: str, level: str) -> str:
         label = node.get("label", "")
         desc = node.get("description", "")[:200]
         resources = node.get("resources", [])
-        resource_titles = ", ".join(r.get("title", "") for r in resources[:3])
+
+        # Include title AND url — previously only titles were extracted,
+        # causing Gemini to hallucinate URLs instead of using real ones.
+        resource_lines = "\n".join(
+            f"    - {r.get('title', '')} → {r.get('url', '')}"
+            for r in resources[:3]
+            if r.get("url")
+        )
 
         lines.append(
             f"Topic: {label}\n"
             f"Description: {desc}\n"
-            f"Resources: {resource_titles}\n"
+            f"Resources:\n{resource_lines if resource_lines else '    (none)'}\n"
         )
 
     content = "\n".join(lines)

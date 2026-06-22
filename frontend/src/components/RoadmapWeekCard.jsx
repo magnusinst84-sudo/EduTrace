@@ -1,8 +1,15 @@
-// TODO: wire to real data
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Check, Clock, ExternalLink, Circle } from "lucide-react";
 import { motion } from "framer-motion"
 import { ExpandableCard } from "./ui/expandable-card"
+
+// Resources can be either plain strings (legacy) or objects {title, url, type}
+function getResourceUrl(r) {
+  return typeof r === "string" ? r : r?.url ?? "#";
+}
+function getResourceLabel(r) {
+  return typeof r === "string" ? r : (r?.title || r?.url || "Resource");
+}
 
 export function RoadmapWeekCard({ week, topic, hours, concepts, resources, status, goal }) {
   // status: 'current' | 'completed' | 'upcoming'
@@ -22,13 +29,10 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
         )}
         {concepts?.length > 0 && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase 
-                          tracking-wide mb-2">Topics</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Topics</p>
             <div className="flex flex-wrap gap-2">
               {concepts.map((t, i) => (
-                <span key={i} className="px-3 py-1 bg-indigo-50 text-indigo-700 
-                                         text-sm rounded-full border 
-                                         border-indigo-100">
+                <span key={i} className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm rounded-full border border-indigo-100">
                   {t}
                 </span>
               ))}
@@ -37,14 +41,17 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
         )}
         {resources?.length > 0 && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase 
-                          tracking-wide mb-2">Resources</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Resources</p>
             <div className="space-y-2">
               {resources.map((r, i) => (
-                <a key={i} href={r} target="_blank" rel="noopener noreferrer"
-                   className="block text-sm text-indigo-600 hover:underline 
-                              truncate">
-                  {r}
+                <a
+                  key={i}
+                  href={getResourceUrl(r)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-sm text-indigo-600 hover:underline truncate"
+                >
+                  {getResourceLabel(r)}
                 </a>
               ))}
             </div>
@@ -117,28 +124,37 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
               Concepts
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {concepts.map((c) => (
-                <span key={c} style={{ padding: "3px 10px", backgroundColor: "#EEF2FF", color: "#3730A3", borderRadius: 9999, fontSize: 12, fontWeight: 500 }}>
+              {(concepts ?? []).map((c, i) => (
+                <span key={i} style={{ padding: "3px 10px", backgroundColor: "#EEF2FF", color: "#3730A3", borderRadius: 9999, fontSize: 12, fontWeight: 500 }}>
                   {c}
                 </span>
               ))}
             </div>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
-              Resources
+
+          {resources?.length > 0 && (
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+                Resources
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {resources.map((r, i) => (
+                  <a
+                    key={i}
+                    href={getResourceUrl(r)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 12, color: "#4F46E5", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
+                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
+                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
+                  >
+                    <ExternalLink size={11} /> {getResourceLabel(r)}
+                  </a>
+                ))}
+              </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {resources.map((r) => (
-                <a key={r} href={r} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "#4F46E5", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
-                  onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
-                  onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
-                >
-                  <ExternalLink size={11} /> {r}
-                </a>
-              ))}
-            </div>
-          </div>
+          )}
+
           <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end" }}>
             <button
               onClick={() => setShowDetails(true)}

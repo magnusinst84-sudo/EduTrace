@@ -16,9 +16,12 @@ class WorldState:
     roadmap: dict = field(default_factory=dict)
     current_week: int = 0
     total_weeks: int = 0
+    current_quiz: dict = field(default_factory=dict)
+    quiz_passed: dict = field(default_factory=dict)
     concepts_understood: list = field(default_factory=list)
     concepts_stuck: list = field(default_factory=list)
     stuck_mode_active: bool = False
+    teaching_mode: str = "analogy"
     conversation_history: list = field(default_factory=list)
 
     def to_dict(self):

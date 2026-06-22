@@ -4,6 +4,7 @@ import { MessageBubble } from "../components/MessageBubble";
 import { TypingIndicator } from "../components/TypingIndicator";
 import { RoadmapWeekCard } from "../components/RoadmapWeekCard";
 import { WorldStatePanel } from "../components/WorldStatePanel";
+import { QuizPanel } from "../components/QuizPanel";
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/client'
@@ -77,7 +78,7 @@ function RoadmapPanel({ roadmap, currentWeek, onClose }) {
           >
             <RoadmapWeekCard
               {...week}
-              isCurrent={week.week === currentWeek}
+              status={week.week === currentWeek ? 'current' : week.week < currentWeek ? 'completed' : 'upcoming'}
             />
           </div>
         ))}
@@ -180,6 +181,7 @@ export default function Chat() {
   const [worldState,   setWorldState]   = useState(null)
   const [sessionState, setSessionState] = useState('diagnostic')
   const [generatingRoadmap, setGeneratingRoadmap] = useState(false)
+  const [showQuiz, setShowQuiz] = useState(false)
 
   // ── Restore session on mount ───────────────────────────────────────────────
   useEffect(() => {
@@ -200,6 +202,7 @@ export default function Chat() {
           stuck:               session.concepts_stuck      ?? [],
           stuck_mode_active:   session.stuck_mode_active   ?? false,
           stuck_mode_name:     'Analogy mode',
+          teaching_mode:       session.teaching_mode       ?? 'analogy',
         })
 
         // Restore phase
@@ -234,16 +237,19 @@ export default function Chat() {
   }, []) // run once on mount only
 
   // ── handleSend ────────────────────────────────────────────────────────────
-  const handleSend = async () => {
-    if (!input.trim() || !sessionId) return
+  const handleSend = async (overrideMessage = null) => {
+    const isOverride = typeof overrideMessage === 'string';
+    const textToSend = isOverride ? overrideMessage : input;
+
+    if (!textToSend.trim() || !sessionId) return
 
     const userMsg = {
       role:      'user',
-      content:   input.trim(),
+      content:   textToSend.trim(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
     setMessages(prev => [...prev, userMsg])
-    setInput('')
+    if (!isOverride) setInput('')
     setTyping(true)
 
     try {
@@ -352,11 +358,35 @@ export default function Chat() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontSize: 13, color: "#6B7280" }}>Learning: <b style={{ color: "#1E1B4B" }}>{topic}</b></span>
+            {worldState && (
+              <select
+                value={worldState?.teaching_mode || 'analogy'}
+                onChange={(e) => {
+                  const mode = e.target.value;
+                  setWorldState(prev => prev ? { ...prev, teaching_mode: mode } : null);
+                  const msg = mode === 'code_example' ? 'switch to code mode' : `switch to ${mode} mode`;
+                  handleSend(msg);
+                }}
+                className="px-2 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-xs font-semibold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+              >
+                <option value="analogy">Analogy</option>
+                <option value="socratic">Socratic</option>
+                <option value="code_example">Code Example</option>
+              </select>
+            )}
+            {worldState && (
+              <button
+                onClick={() => setShowQuiz(true)}
+                className="px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition-colors hidden sm:block"
+              >
+                Take Week {worldState?.week || 1} Quiz
+              </button>
+            )}
             <button
               onClick={() => navigate('/')}
               style={{ padding: "5px 12px", borderRadius: 7, border: "1.5px solid #E5E7EB", backgroundColor: "#fff", fontSize: 12, color: "#6B7280", cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}
             >
-              <RotateCcw size={12} /> New topic
+              <RotateCcw size={12} /> <span className="hidden sm:inline">New topic</span>
             </button>
             <button
               onClick={() => { logout(); navigate('/login') }}
@@ -508,7 +538,7 @@ export default function Chat() {
           </div>
           {/* Show World State inside the right panel when roadmap is active */}
           {worldState && (
-            <div style={{ width: 280, borderL: "1px solid #E5E7EB", backgroundColor: "#fff", padding: 12, overflowY: "auto" }} className="border-l border-gray-100">
+            <div style={{ width: 280, borderLeft: "1px solid #E5E7EB", backgroundColor: "#fff", padding: 12, overflowY: "auto" }} className="border-l border-gray-100">
               <WorldStatePanel
                 topic={worldState.topic ?? topic}
                 level={worldState.level ?? '—'}
@@ -554,6 +584,27 @@ export default function Chat() {
       )}
 
       <FloatingDock items={dockItems} />
+
+      {/* Quiz Modal */}
+      {showQuiz && (
+        <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-transparent w-full max-w-3xl relative">
+            <button 
+              onClick={() => setShowQuiz(false)}
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-200 transition-colors bg-black/20 rounded-full"
+            >
+              <X size={24} />
+            </button>
+            <QuizPanel 
+              sessionId={sessionId} 
+              currentWeek={worldState?.week || 1} 
+              onQuizPassed={() => {
+                setShowQuiz(false);
+              }} 
+            />
+          </div>
+        </div>
+      )}
 
     </div>
   );
