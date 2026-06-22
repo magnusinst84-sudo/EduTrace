@@ -16,10 +16,24 @@ from agent.loader import get_topic_slug, build_prompt_context
 
 logger = logging.getLogger(__name__)
 
+import re
+
 def _clean_json_markdown(text: str) -> str:
     """Strip markdown code fences before json.loads()."""
-    return text.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
-
+    if text is None:
+        return None
+    # Remove ```json ... ``` or ``` ... ``` blocks
+    text = re.sub(r'^```(?:json)?\s*', '', text.strip())
+    text = re.sub(r'\s*```$', '', text.strip())
+    # Find the first { or [ and last } or ] to extract just the JSON
+    start = min(
+        (text.find('{') if text.find('{') != -1 else len(text)),
+        (text.find('[') if text.find('[') != -1 else len(text))
+    )
+    end = max(text.rfind('}'), text.rfind(']'))
+    if start < len(text) and end != -1:
+        text = text[start:end+1]
+    return text.strip()
 
 async def run_diagnostic_turn(session_id: str, user_answer: str) -> dict:
     from db.sessions import load_session, save_session
