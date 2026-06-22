@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 60000,
+  timeout: 120000,
 })
 
 api.interceptors.request.use(async (config) => {

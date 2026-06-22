@@ -1,4 +1,5 @@
 import json
+import re
 import asyncio
 import logging
 from agent.state import WorldState
@@ -11,21 +12,18 @@ from agent.prompts import (
     build_quiz_prompt,
     build_quiz_grading_prompt,
 )
-from agent.gemini import gemini_call, gemini_call_with_search
+from agent.gemini import gemini_call
 from agent.loader import get_topic_slug, build_prompt_context
 
 logger = logging.getLogger(__name__)
 
-import re
 
 def _clean_json_markdown(text: str) -> str:
     """Strip markdown code fences before json.loads()."""
     if text is None:
         return None
-    # Remove ```json ... ``` or ``` ... ``` blocks
     text = re.sub(r'^```(?:json)?\s*', '', text.strip())
     text = re.sub(r'\s*```$', '', text.strip())
-    # Find the first { or [ and last } or ] to extract just the JSON
     start = min(
         (text.find('{') if text.find('{') != -1 else len(text)),
         (text.find('[') if text.find('[') != -1 else len(text))
@@ -34,6 +32,7 @@ def _clean_json_markdown(text: str) -> str:
     if start < len(text) and end != -1:
         text = text[start:end+1]
     return text.strip()
+
 
 async def run_diagnostic_turn(session_id: str, user_answer: str) -> dict:
     from db.sessions import load_session, save_session
@@ -53,8 +52,6 @@ async def run_diagnostic_turn(session_id: str, user_answer: str) -> dict:
         "turn": state.diagnostic_turn
     })
 
-    # diagnostic_turn tracks how many questions have been ASKED (0-indexed).
-    # We ask turns 0, 1, 2 — so after storing the answer to turn 2 we infer level.
     if state.diagnostic_turn < 2:
         next_turn = state.diagnostic_turn + 1
         prompt = build_diagnostic_prompt(state.to_dict(), next_turn)
@@ -73,7 +70,6 @@ async def run_diagnostic_turn(session_id: str, user_answer: str) -> dict:
             "question": question
         }
     else:
-        # All 3 answers collected — infer level
         state.diagnostic_complete = True
         prompt = build_level_inference_prompt(state.to_dict())
         response_text = await gemini_call(prompt, json_mode=True)
@@ -111,15 +107,12 @@ async def generate_roadmap(session_id: str) -> dict:
     topic_slug = get_topic_slug(state.topic)
     context = build_prompt_context(topic_slug, state.level)
     prompt = build_roadmap_prompt(state.to_dict(), context)
-    
+
     parsed = None
     for attempt in range(1, 4):
-        # Roadmap output is large (multiple weeks, each with topics + resource
-        # objects including URLs) — the default 1500-token budget truncates it
-        # mid-JSON. Give this call a much larger ceiling.
-        response_text = await gemini_call_with_search(prompt, max_tokens=4096)
+        # Use gemini_call directly (no search grounding) for speed
+        response_text = await gemini_call(prompt, json_mode=False, max_tokens=4096)
 
-        # Guard against malformed JSON from Gemini — never let this 500
         try:
             parsed = json.loads(_clean_json_markdown(response_text))
             if attempt > 1:
@@ -162,13 +155,12 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
     understood_keywords = ["got it", "understood", "makes sense", "i understand",
                            "clear now", "next topic", "move on"]
     advance_exact = ["advance week", "next week"]
-    advance_keywords = ["i'm ready for the next week", "im ready for the next week", 
+    advance_keywords = ["i'm ready for the next week", "im ready for the next week",
                         "let's move to next week", "lets move to next week", "ready to move on to week"]
 
     msg_lower = user_message.lower().strip()
     words = msg_lower.split()
 
-    # Teaching Mode Switching Detection
     new_mode = None
     if any(phrase in msg_lower for phrase in ["switch to analogy", "use analogy", "analogy mode"]):
         new_mode = "analogy"
@@ -185,12 +177,11 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
             response = "Switched to Socratic mode! I'll guide you with questions from now on."
         elif new_mode == "code_example":
             response = "Switched to Code Example mode! I'll explain concepts using working code snippets from now on."
-        
+
         state.conversation_history.append({"role": "user", "content": user_message})
         state.conversation_history.append({"role": "assistant", "content": response})
         state.conversation_history = state.conversation_history[-20:]
-        
-        from db.sessions import save_session
+
         save_session(state)
         return {
             "status": "ok",
@@ -200,10 +191,8 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
             "total_weeks": state.total_weeks,
             "week_advanced": False
         }
-    
-    # Check for negations to prevent false positives like "I'm not ready to move on..."
+
     has_negation = any(neg in words for neg in ["no", "dont", "don't"]) or "not ready" in msg_lower or "not yet" in msg_lower
-    
     wants_advance = (msg_lower in advance_exact) or (any(kw in msg_lower for kw in advance_keywords) and not has_negation)
     week_advanced = False
 
@@ -218,7 +207,7 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
                 response = f"Welcome to Week {state.current_week}! You're making great progress. What would you like to dive into first?"
         else:
             response = "You have reached the final week and completed the roadmap! Great job!"
-        
+
         state.stuck_mode_active = False
     else:
         if any(kw in msg_lower for kw in stuck_keywords):
@@ -231,8 +220,6 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
 
     state.conversation_history.append({"role": "user", "content": user_message})
     state.conversation_history.append({"role": "assistant", "content": response})
-
-    # Keep last 20 entries
     state.conversation_history = state.conversation_history[-20:]
 
     save_session(state)
@@ -244,6 +231,7 @@ async def run_adaptive_turn(session_id: str, user_message: str) -> dict:
         "total_weeks": state.total_weeks,
         "week_advanced": week_advanced
     }
+
 
 async def generate_quiz(session_id: str) -> dict:
     from db.sessions import load_session, save_session
@@ -261,7 +249,7 @@ async def generate_quiz(session_id: str) -> dict:
         raise ValueError(f"Week {state.current_week} not found in roadmap")
 
     prompt = build_quiz_prompt(state.to_dict())
-    
+
     parsed = None
     for attempt in range(1, 4):
         response_text = await gemini_call(prompt, json_mode=True, max_tokens=2048)
@@ -278,11 +266,12 @@ async def generate_quiz(session_id: str) -> dict:
 
     state.current_quiz = parsed
     save_session(state)
-    
+
     return {
         "status": "generated",
         "quiz": state.current_quiz
     }
+
 
 async def grade_quiz(session_id: str, user_answers: dict) -> dict:
     from db.sessions import load_session, save_session
@@ -295,7 +284,7 @@ async def grade_quiz(session_id: str, user_answers: dict) -> dict:
         raise ValueError("No quiz generated yet for this session")
 
     prompt = build_quiz_grading_prompt(state.current_quiz, user_answers)
-    
+
     parsed = None
     for attempt in range(1, 4):
         response_text = await gemini_call(prompt, json_mode=True, max_tokens=2048)
@@ -312,7 +301,7 @@ async def grade_quiz(session_id: str, user_answers: dict) -> dict:
 
     state.quiz_passed[str(state.current_week)] = parsed.get("passed", False)
     save_session(state)
-    
+
     return {
         "status": "graded",
         "result": parsed
