@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 DEFAULT_MAX_TOKENS = 1500
 
 MODEL_CHAINS = {
-    "development": ["gemini-1.5-flash", "gemini-3.1-flash-lite"],
-    "production": ["gemini-1.5-flash", "gemini-3.1-flash-lite"],
+    "development": ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-3.1-flash-lite"],
+    "production":  ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-3.1-flash-lite"],
 }
 
 
@@ -55,7 +55,7 @@ async def gemini_call_with_search(prompt: str, max_tokens: int = 4096) -> str:
 
     response = await asyncio.to_thread(
         client.models.generate_content,
-        model="gemini-1.5-flash",
+        model="gemini-3.5-flash",
         contents=prompt,
         config=config,
     )
@@ -68,7 +68,7 @@ async def gemini_call_with_search(prompt: str, max_tokens: int = 4096) -> str:
         )
         response = await asyncio.to_thread(
             client.models.generate_content,
-            model="gemini-1.5-flash",
+            model="gemini-3.5-flash",
             contents=prompt,
             config=fallback_config,
         )
