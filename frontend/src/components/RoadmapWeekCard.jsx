@@ -11,14 +11,6 @@ function getResourceLabel(r) {
   return typeof r === "string" ? r : (r?.title || r?.url || "Resource");
 }
 
-function isYouTube(url) {
-  return url && (url.includes('youtube.com') || url.includes('youtu.be'))
-}
-
-function getYouTubeId(url) {
-  const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)
-  return match ? match[1] : null
-}
 
 export function RoadmapWeekCard({ week, topic, hours, concepts, resources, status, goal }) {
   // status: 'current' | 'completed' | 'upcoming'
@@ -50,34 +42,17 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
             <p style={{ fontSize: 10, fontWeight: 500, color: "#4a7a7a", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 8 }}>Resources</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {resources.map((r, i) => (
-                isYouTube(getResourceUrl(r)) ? (
-                  <iframe
-                    key={i}
-                    width="100%"
-                    height="180"
-                    src={`https://www.youtube.com/embed/${getYouTubeId(getResourceUrl(r))}`}
-                    frameBorder="0"
-                    allowFullScreen
-                    style={{
-                      borderRadius: 0,
-                      marginTop: 6,
-                      border: "1px solid rgba(0,255,247,0.15)",
-                      display: "block"
-                    }}
-                  />
-                ) : (
-                  <a
-                    key={i}
-                    href={getResourceUrl(r)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ display: "block", fontSize: 12, color: "#bf00ff", textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = "#00fff7"}
-                    onMouseLeave={(e) => e.currentTarget.style.color = "#bf00ff"}
-                  >
-                    {getResourceLabel(r)}
-                  </a>
-                )
+                <a
+                  key={i}
+                  href={getResourceUrl(r)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "block", fontSize: 12, color: "#bf00ff", textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "#00fff7"}
+                  onMouseLeave={(e) => e.currentTarget.style.color = "#bf00ff"}
+                >
+                  {getResourceLabel(r)}
+                </a>
               ))}
             </div>
           </div>
@@ -166,34 +141,17 @@ export function RoadmapWeekCard({ week, topic, hours, concepts, resources, statu
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {resources.map((r, i) => (
-                  isYouTube(getResourceUrl(r)) ? (
-                    <iframe
-                      key={i}
-                      width="100%"
-                      height="180"
-                      src={`https://www.youtube.com/embed/${getYouTubeId(getResourceUrl(r))}`}
-                      frameBorder="0"
-                      allowFullScreen
-                      style={{
-                        borderRadius: 0,
-                        marginTop: 6,
-                        border: "1px solid rgba(0,255,247,0.15)",
-                        display: "block"
-                      }}
-                    />
-                  ) : (
-                    <a
-                      key={i}
-                      href={getResourceUrl(r)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: "#bf00ff", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, borderBottom: "1px solid rgba(191,0,255,0.15)", paddingBottom: 2 }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = "#00fff7"; e.currentTarget.style.borderBottomColor = "rgba(0,255,247,0.3)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = "#bf00ff"; e.currentTarget.style.borderBottomColor = "rgba(191,0,255,0.15)"; }}
-                    >
-                      <ExternalLink size={11} /> {getResourceLabel(r)}
-                    </a>
-                  )
+                  <a
+                    key={i}
+                    href={getResourceUrl(r)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 12, color: "#bf00ff", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, borderBottom: "1px solid rgba(191,0,255,0.15)", paddingBottom: 2 }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = "#00fff7"; e.currentTarget.style.borderBottomColor = "rgba(0,255,247,0.3)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = "#bf00ff"; e.currentTarget.style.borderBottomColor = "rgba(191,0,255,0.15)"; }}
+                  >
+                    <ExternalLink size={11} /> {getResourceLabel(r)}
+                  </a>
                 ))}
               </div>
             </div>

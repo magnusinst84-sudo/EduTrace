@@ -76,7 +76,10 @@ export default function Hero() {
           borderBottom: "1.5px solid rgba(0,255,247,0.15)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          onClick={() => navigate('/home')}
+          style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
+        >
           <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
           <span style={{ fontWeight: 700, color: "#00fff7", fontSize: 16, letterSpacing: "0.2em" }}>EDUTRACE</span>
         </div>

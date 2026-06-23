@@ -59,7 +59,10 @@ export default function Login() {
     >
       {/* Logo */}
       <div style={{ marginBottom: 32, textAlign: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8 }}>
+        <div
+          onClick={() => navigate('/home')}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8, cursor: "pointer" }}
+        >
           <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
           <span style={{ fontSize: 16, fontWeight: 700, color: "#00fff7", letterSpacing: "0.24em" }}>EDUTRACE</span>
         </div>

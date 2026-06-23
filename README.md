@@ -80,7 +80,7 @@ edutrace/
         │   └── Progress.jsx      # Week-by-week progress view
         ├── components/
         │   ├── WorldStatePanel.jsx     # Topic, level, progress, teaching mode, pace
-        │   ├── RoadmapWeekCard.jsx     # Accordion week cards, YouTube embed detection
+        │   ├── RoadmapWeekCard.jsx     # Accordion week cards, resources rendered as links
         │   ├── MessageBubble.jsx       # Agent/user bubbles, mode-switch styling
         │   ├── QuizPanel.jsx           # MCQ + short answer + code challenge
         │   └── StuckModeBanner.jsx     # Stuck mode indicator
@@ -207,7 +207,7 @@ Neither `.env` file is committed. See `.gitignore` and `.env.example`.
 | Learning pace: Relaxed / Normal / Accelerated | Shipped |
 | End-of-week quizzes (MCQ + short answer + code) | Shipped |
 | PDF roadmap export (jsPDF) | Shipped |
-| YouTube resource embeds | Shipped |
+| YouTube resource embeds (iframes) | Removed — links only |
 | Progress page with week status cards | Shipped |
 | Firebase Auth (Google OAuth + Email/Password) | Shipped |
 | Session persistence + resume | Shipped |
@@ -259,6 +259,8 @@ Note: the Render backend runs on the free tier. First request after inactivity m
 Built for the **Build with Gemini Hackathon** over 15 days (Jun 11 – Jun 26, 2025).
 
 The original PRD specified a light theme and a narrower feature set. During build the scope expanded significantly — teaching modes, learning pace, quizzes, PDF export, a progress page, and a full cyberpunk UI overhaul were all added beyond the original plan.
+
+Post-hackathon, YouTube iframe embeds in roadmap week cards were removed. All resources now render as plain anchor links regardless of URL type — simpler, faster, and avoids iframe CSP issues.
 
 ---
 

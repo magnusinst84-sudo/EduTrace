@@ -67,7 +67,10 @@ export default function Landing() {
       
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", backgroundColor: "#0d0d1f", borderBottom: "1.5px solid rgba(0,255,247,0.15)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          onClick={() => navigate('/home')}
+          style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
+        >
           <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
           <span style={{ fontSize: 14, fontWeight: 700, color: "#00fff7", letterSpacing: "0.2em" }}>EDUTRACE</span>
         </div>

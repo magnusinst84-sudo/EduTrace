@@ -261,7 +261,10 @@ export default function Chat() {
 
         {/* Top nav */}
         <header style={{ height: 52, backgroundColor: "#0d0d1f", backdropFilter: "none", borderBottom: "1.5px solid rgba(0,255,247,0.15)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            onClick={() => navigate('/home')}
+            style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}
+          >
             <img src={logo} alt="EduTrace" style={{ height: 28, width: 28, objectFit: "contain", marginRight: 8, verticalAlign: "middle" }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: "#00fff7", letterSpacing: "0.18em" }}>EDUTRACE</span>
           </div>
